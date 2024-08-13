@@ -54,6 +54,7 @@ fetchData()
               class="focus:outline-none w-72 pr-12 border px-4 py-2 rounded" type="text">
             <Icon class="text-[#666] text-2xl absolute top-1/2 right-5 -translate-y-1/2" icon="gg:search" />
           </div>
+         
           <button @click="isAddModal = true"
             class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex gap-1  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
             <Icon class="text-lg" icon="ep:plus" />

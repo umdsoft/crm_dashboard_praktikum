@@ -6,12 +6,24 @@ import { api } from '@/api'
 import { useRouter } from 'vue-router'
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
+
+
+const open = ref(false);
+const afterOpenChange = bool => {
+  console.log('open', bool);
+};
+const showDrawer = () => {
+  open.value = true;
+};
+
+
 const users = ref([])
 
 const search = useDebouncedRef('', 1000)
 const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
+const getData = ref([])
 
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy");
@@ -19,6 +31,8 @@ function dateFormat(date) {
 }
 const fetchData = async () => {
   try {
+    const datas = await api.get(`group/get-data`);
+    getData.value = datas.data
     const response = await api.get(`group/get-all${search.value ? `search?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 15 - 15} `);
     users.value = response.data.data
     console.log(users.value)
@@ -29,7 +43,23 @@ const fetchData = async () => {
     console.error('Error occurred:', error);
   }
 };
-
+const formData = ref({
+  direction_id: null,
+  day: null,
+  room_id: null,
+  time: null,
+  start_date: null,
+  duration: null
+})
+const createGroup = async () => {
+  try {
+    await api.post('/group/create', formData._value)
+    // window.location.reload();
+    router.push('/groups')
+  } catch (e) {
+    console.log(e)
+  }
+}
 fetchData()
 const router = useRouter()
 
@@ -69,15 +99,56 @@ const openGroup = (id) => {
                   class="focus:outline-none w-72 pr-12 border px-4 py-2 rounded" type="text">
                 <Icon class="text-[#666] text-2xl absolute top-1/2 right-5 -translate-y-1/2" icon="gg:search" />
               </div>
+              <!-- Create Group -->
+              <a-drawer v-model:open="open" class="custom-class" root-class-name="root-class-name"
+                 title="Guruh yaratish" placement="right"
+                @after-open-change="afterOpenChange">
+                            <form @submit="createGroup" action="">
+                  <div class="flex flex-col gap-5">
+                    <select required class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded"
+                      v-model="formData.direction_id">
+                      <option v-for="item, index in getData.direction" :key="index" :value="item.id">{{ item.name }}
+                      </option>
+                    </select>
+                    <select required class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded"
+                      v-model="formData.day">
+                      <option v-for="item, index in getData.day" :key="index" :value="item.id">{{ item.name }}</option>
+                    </select>
+                    <select required class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded"
+                      v-model="formData.time">
+                      <option v-for="item, index in getData.time" :key="index" :value="item.id">{{ item.name }}</option>
+                    </select>
+                    <select required class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded"
+                      v-model="formData.room_id">
+                      <option v-for="item, index in getData.room" :key="index" :value="item.id">{{ item.name }}</option>
+                    </select>
+                  </div>
+                  <div class="mt-5">
+                    <p class="text-gray-400">Kurs davomiyligi(oy)</p>
+                    <input class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded" type="text"
+                      v-model="formData.duration">
+                  </div>
+                  <div class="mt-5">
+                    <p class="text-gray-400">Kurs boshlanish sanasi</p>
+                    <input class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded" type="date"
+                      v-model="formData.start_date">
+                  </div>
+
+                  <button class="w-full bg-[#166199] rounded py-2.5 px-5 mt-10 text-white ">
+                    Yaratish
+                  </button>
+                </form>
+              </a-drawer>
+                 <!-- End Create Group -->
               <button
                 class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
                 Filter
               </button>
-              <router-link to="/create-group"
+              <button @click="showDrawer"
                 class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
                 <Icon class="text-lg" icon="ep:plus" />
                 Qo'shish
-              </router-link>
+            </button>
             </div>
           </div>
           <table class="w-full text-left rtl:text-right text-gray-500 ">
@@ -86,10 +157,10 @@ const openGroup = (id) => {
                 <th class="px-6 py-3 ">
                   Guruh kodi
                 </th>
-                <th class="px-6 py-3 ">Yo’nalish</th>
+                <th class="px-6 py-3 ">Yo‘nalish</th>
                 <th class="px-6 py-3 ">Dars kunlari</th>
                 <th class="px-6 py-3 ">Dars vaqti</th>
-                <th class="px-6 py-3 ">O’quvchilar soni</th>
+                <th class="px-6 py-3 ">O‘quvchilar soni</th>
                 <th class="px-6 py-3 ">Dars boshlangan sana</th>
                 <th class="px-6 py-3 ">Status</th>
               </tr>

@@ -1,17 +1,24 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { Icon } from '@iconify/vue';
+import { useRoute } from 'vue-router'
 import Pagination from '@/components/Pagination.vue';
 import { api } from '@/api'
-import { useRouter } from 'vue-router'
+
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
+const route = useRoute()
+const id = ref(route.params.id)
+
 const users = ref([])
 
 const search = useDebouncedRef('', 1000)
 const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
+
+
+
 
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy | HH:MM");
@@ -22,8 +29,10 @@ function dateFormat2(date) {
   return date1;
 }
 const fetchData = async () => {
+  
   try {
-    const response = await api.get(`lesson/module/get-all?course=${this.$route.params.id}&limit=15&skip=${currentPage.value * 10 - 10} `);
+    console.log(route)
+    const response = await api.get(`lesson/module/get-all/${id.value}?limit=15&skip=${currentPage.value * 15 - 15} `);
     users.value = response.data.data
     totalUsers.value = response.data.total
     totalPages.value = Math.ceil(response.data.total / response.data.limit)
@@ -34,7 +43,6 @@ const fetchData = async () => {
 };
 
 fetchData()
-const router = useRouter()
 
 
 watch(currentPage, () => {
@@ -58,7 +66,7 @@ const goToPage = (page) => {
           <div class="p-6 flex items-center justify-between mb-10">
             <h1 class="text-xl text-[#29A0E3] font-medium">Darslar ro‘yhati</h1>
             <div class="flex items-center gap-2">
-
+           
               <download-excel :data="users" type="xlsx" name="filename.xlsx" class="flex  items-center text-[#29A0E3]">
                 Eksport excel
                 <Icon class="text-3xl" icon="material-symbols:download" />
@@ -90,12 +98,12 @@ const goToPage = (page) => {
                 <th class="px-6 py-3">Vaqti</th>
               </tr>
             </thead>
-        
+
             <tbody v-if="users.length > 0" class="text-center">
               <tr v-for="item, index in users" :key="index"
                 class=" border-b text-gray-900 font-medium hover:bg-gray-50 ">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                    {{ (currentPage - 1) * 10 + index + 1 }}
+                  {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
                 <td class="px-6 py-4">
                   {{ item.course }}
@@ -108,7 +116,7 @@ const goToPage = (page) => {
                   -
                 </td>
                 <td class="px-6 py-4">
-                    <span class="text-emerald-700 font-medium" v-if="item.type == 1">Asosiy</span>
+                  <span class="text-emerald-700 font-medium" v-if="item.type == 1">Asosiy</span>
                   <span class="text-yellow-500 font-medium" v-if="item.type == 2">Qo'shimcha</span>
                 </td>
                 <td class="px-6 py-4">
@@ -117,7 +125,7 @@ const goToPage = (page) => {
                 </td>
                 <td class="px-6 py-4">
                   {{ dateFormat(item.created) }}
-                </td>           
+                </td>
               </tr>
 
             </tbody>

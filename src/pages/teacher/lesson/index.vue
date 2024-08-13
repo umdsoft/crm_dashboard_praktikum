@@ -12,7 +12,7 @@ const search = useDebouncedRef('', 1000)
 const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
-
+const router = useRouter()
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy | HH:MM");
   return date1;
@@ -23,7 +23,7 @@ function dateFormat2(date) {
 }
 const fetchData = async () => {
   try {
-    const response = await api.get(`lesson/get-all/${search.value ? `?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 10 - 10} `);
+    const response = await api.get(`lesson/get-all${search.value ? `?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 10 - 10} `);
     users.value = response.data.data
     console.log(response.data.total)
     totalUsers.value = response.data.total
@@ -33,9 +33,11 @@ const fetchData = async () => {
     console.error('Error occurred:', error);
   }
 };
-
+const openModule = async (id) =>{
+  router.push({ name: 'lesson-module', params: { id: id } })
+}
 fetchData()
-const router = useRouter()
+
 
 
 watch(currentPage, () => {
@@ -91,15 +93,16 @@ const goToPage = (page) => {
                 <th class="px-6 py-3">Vaqti</th>
               </tr>
             </thead>
-        
+       
             <tbody v-if="users.length > 0" class="text-center">
-              <tr v-for="item, index in users" :key="index"
-                class=" border-b text-gray-900 font-medium hover:bg-gray-50 ">
+              <tr v-for="item, index in users" :key="index" @click="openModule(item.id)"
+                class=" border-b text-gray-900 font-medium hover:bg-gray-50 " style="cursor: pointer;">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
                     {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
+            
                 <td class="px-6 py-4">
-                  {{ item.course }}
+                  {{ item.direction_name }}
                 </td>
                 <td class="px-6 py-4">
                   {{ item.name }}
@@ -109,12 +112,12 @@ const goToPage = (page) => {
                   {{ item.module_count }}
                 </td>
                 <td class="px-6 py-4">
-                    <span class="text-emerald-700 font-medium" v-if="item.type == 1">Asosiy</span>
-                  <span class="text-yellow-500 font-medium" v-if="item.type == 2">Qo'shimcha</span>
+                    <span class="text-emerald-700 font-medium" v-if="item.lesson_type == 1">Asosiy</span>
+                  <span class="text-yellow-500 font-medium" v-if="item.lesson_type == 2">Qo'shimcha</span>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="text-emerald-700 font-medium" v-if="item.status == 1">Aktiv</span>
-                  <span class="text-red-500 font-medium" v-if="item.status == 2">Aktiv emas</span>
+                  <span class="text-emerald-700 font-medium" v-if="item.lesson_status == 1">Aktiv</span>
+                  <span class="text-red-500 font-medium" v-if="item.lesson_status  == 2">Aktiv emas</span>
                 </td>
                 <td class="px-6 py-4">
                   {{ dateFormat(item.created) }}

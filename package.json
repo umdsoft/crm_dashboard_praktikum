@@ -12,6 +12,7 @@
     "@canvasjs/vue-charts": "^1.0.4",
     "@casl/ability": "^6.7.0",
     "@casl/vue": "^2.2.2",
+    "ant-design-vue": "^4.2.3",
     "axios": "^1.6.5",
     "dateformat": "^5.0.3",
     "maska": "^2.1.11",
