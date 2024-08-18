@@ -1,41 +1,37 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { Icon } from '@iconify/vue';
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Pagination from '@/components/Pagination.vue';
 import { api } from '@/api'
-
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
+import addModuleModal from '../../../components/teacher/addModuleModal.vue';
 const route = useRoute()
 const id = ref(route.params.id)
 
 const users = ref([])
-
+const router = useRouter()
 const search = useDebouncedRef('', 1000)
+const addModule = ref(false)
 const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
 
-
-
-
 function dateFormat(date) {
-  let date1 = dateformat(date, "dd.mm.yyyy | HH:MM");
-  return date1;
-}
-function dateFormat2(date) {
   let date1 = dateformat(date, "dd.mm.yyyy");
   return date1;
 }
+const openDars = async (id) => {
+  router.push({ name: 'lesson-dars', params: { id: id } })
+}
 const fetchData = async () => {
-  
+
   try {
-    console.log(route)
     const response = await api.get(`lesson/module/get-all/${id.value}?limit=15&skip=${currentPage.value * 15 - 15} `);
     users.value = response.data.data
     totalUsers.value = response.data.total
-    totalPages.value = Math.ceil(response.data.total / response.data.limit)
+    totalPages.value = Math.ceil(response.data.total / 15)
     currentPage.value
   } catch (error) {
     console.error('Error occurred:', error);
@@ -62,25 +58,13 @@ const goToPage = (page) => {
   <div>
     <div class="">
       <div>
+        <addModuleModal v-if="addModule" @close="addModule = false" />
         <div class="overflow-x-auto bg-white sm:rounded-lg">
           <div class="p-6 flex items-center justify-between mb-10">
-            <h1 class="text-xl text-[#29A0E3] font-medium">Darslar ro‘yhati</h1>
+            <h1 class="text-xl text-[#29A0E3] font-medium">Kurs modullari ro‘yhati</h1>
             <div class="flex items-center gap-2">
-           
-              <download-excel :data="users" type="xlsx" name="filename.xlsx" class="flex  items-center text-[#29A0E3]">
-                Eksport excel
-                <Icon class="text-3xl" icon="material-symbols:download" />
-              </download-excel>
-              <div class="relative">
-                <input v-model="search" placeholder="ID bo'yicha qidiruv"
-                  class="focus:outline-none w-72 pr-12 border px-4 py-2 rounded" type="text">
-                <Icon class="text-[#666] text-2xl absolute top-1/2 right-5 -translate-y-1/2" icon="gg:search" />
-              </div>
-              <button
-                class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
-                Filter
-              </button>
-              <button class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
+              <button class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white"
+                @click="addModule = true">
                 <Icon class="text-lg" icon="ep:plus" />
                 Qo'shish
               </button>
@@ -89,11 +73,10 @@ const goToPage = (page) => {
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
             <thead class="text-base text-gray-700  text-center">
               <tr>
-                <th class="px-6 py-3  ">#</th>
-                <th class="px-6 py-3 ">Yo'nalish</th>
-                <th class="px-6 py-3 ">Kurs nomi</th>
-                <th class="px-6 py-3 ">Modullar soni</th>
-                <th class="px-6 py-3">Kurs turi</th>
+                <th class="px-6 py-3">#</th>
+                <th class="px-6 py-3">Modul nomi</th>
+                <th class="px-6 py-3">Kurs nomi</th>
+                <th class="px-6 py-3">Darslar soni</th>
                 <th class="px-6 py-3">Status</th>
                 <th class="px-6 py-3">Vaqti</th>
               </tr>
@@ -101,15 +84,15 @@ const goToPage = (page) => {
 
             <tbody v-if="users.length > 0" class="text-center">
               <tr v-for="item, index in users" :key="index"
-                class=" border-b text-gray-900 font-medium hover:bg-gray-50 ">
+                class=" border-b text-gray-900 font-medium hover:bg-gray-50" style="cursor: pointer;" @click="openDars(item.id)">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
                   {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
                 <td class="px-6 py-4">
-                  {{ item.course }}
+                  {{ item.name }}
                 </td>
                 <td class="px-6 py-4">
-                  {{ item.name }}
+                  {{ item.lesson_name }}
                 </td>
 
                 <td class="px-6 py-4">
@@ -118,10 +101,6 @@ const goToPage = (page) => {
                 <td class="px-6 py-4">
                   <span class="text-emerald-700 font-medium" v-if="item.type == 1">Asosiy</span>
                   <span class="text-yellow-500 font-medium" v-if="item.type == 2">Qo'shimcha</span>
-                </td>
-                <td class="px-6 py-4">
-                  <span class="text-emerald-700 font-medium" v-if="item.status == 1">Aktiv</span>
-                  <span class="text-red-500 font-medium" v-if="item.status == 2">Aktiv emas</span>
                 </td>
                 <td class="px-6 py-4">
                   {{ dateFormat(item.created) }}

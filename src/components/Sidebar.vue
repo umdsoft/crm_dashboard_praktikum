@@ -116,8 +116,6 @@ const sidebarMenu = ref([
       <div>
         <img class="mx-auto" src="/logo.png" alt="">
       </div>
-
-
       <div class="flex flex-col mt-10 gap-2">
         <router-link
           class="[&.router-link-exact-active]:bg-[#114E7B] flex items-center gap-2 text-white p-3 rounded-md hover:bg-[#114E7B]"

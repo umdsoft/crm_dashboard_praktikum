@@ -40,12 +40,22 @@ const router = createRouter({
         {
           path: '/lesson',
           name: 'lesson',
-          component: () => import('@/pages/teacher/lesson/index.vue')
+          component: () => import('@/pages/teacher/lesson/index.vue'),
         },
         {
           path: '/lesson/:id',
           name: 'lesson-module',
           component: () => import('@/pages/teacher/lesson/lesson-module.vue')
+        },
+        {
+          path: '/lesson/dars/:id',
+          name: 'lesson-dars',
+          component: () => import('@/pages/teacher/lesson/dars.vue')
+        },
+        {
+          path: '/lesson/dars/create/:id',
+          name: 'lesson-dars-create',
+          component: () => import('@/pages/teacher/lesson/create-dars.vue')
         },
         {
           path: '/leads',
@@ -63,11 +73,7 @@ const router = createRouter({
           name: 'groups',
           component: () => import('@/pages/manager/groups.vue'),
           children: [
-            {
-              path: '/create-group',
-              name: 'createGroups',
-              component: () => import('@/pages/manager/group/create-group.vue'),
-            }
+
           ]
 
         },

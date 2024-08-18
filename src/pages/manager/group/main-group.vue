@@ -1,21 +1,28 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import AddGroupPupil from '@/components/addGroupPupil.vue';
+
+import startGroup from '../../../components/group/startGroup.vue';
 import pupils from '@/components/group/pupils.vue';
 import jurnal from '@/components/group/jurnal.vue';
 import payments from '@/components/group/payments.vue';
 import about from '@/components/group/about.vue';
 import { api } from '@/api'
+import AddTeacherGroup from '../../../components/group/addTeacherGroup.vue';
+import AddGroupPupil from '../../../components/group/addGroupPupil.vue';
+
 
 const route = useRoute()
 
 const isAddModal = ref(false)
+const isStartModal = ref(false)
+const isTeacherModal = ref(false)
 const getData = ref([])
 const tabIndex = ref(1)
 const groupId = ref(route.params.id)
 const students = ref([])
 const payment = ref([])
+
 
 const changeTab = (index) => {
   tabIndex.value = index
@@ -27,7 +34,7 @@ const fetchData = async () => {
     getData.value = response.data
     students.value = getData.value.groupStudents
     payment.value = getData.value.payment
-    console.log('payment',payment.value)
+    console.log('payment', payment.value)
   } catch (e) {
     console.log('e', e)
   }
@@ -40,7 +47,10 @@ fetchData()
 
 <template>
   <div>
-    <AddGroupPupil v-if="isAddModal" @close="isAddModal = false" :group_id="groupId.value"/>
+
+    <AddGroupPupil v-if="isAddModal" @close="isAddModal = false" :group_id="groupId.value" />
+    <startGroup v-if="isStartModal" @close="isStartModal = false" :group_id="groupId.value"/>
+    <AddTeacherGroup v-if="isTeacherModal" @close="isTeacherModal = false" :group_id="groupId.value" />
     <div class="">
       <div class="pt-5 flex items-center justify-between mb-10">
         <h1 class="text-xl text-[#29A0E3] font-medium">#P-10/2023 guruh</h1>
@@ -54,14 +64,19 @@ fetchData()
               class="focus:outline-none w-72 pr-12 border px-4 py-2 rounded" type="text">
             <Icon class="text-[#666] text-2xl absolute top-1/2 right-5 -translate-y-1/2" icon="gg:search" />
           </div>
-         
+
           <button @click="isAddModal = true"
             class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex gap-1  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
             <Icon class="text-lg" icon="ep:plus" />
             O’quvchi qo’shish
           </button>
-          <button class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
-            Kursni yakunlash
+          <button @click="isTeacherModal = true"
+            class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex gap-1  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
+            <Icon class="text-lg" icon="ep:plus" />
+            O’qituvchi qo’shish
+          </button>
+          <button @click="isStartModal = true" class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
+            Kursni boshlash
           </button>
         </div>
       </div>
@@ -91,9 +106,9 @@ fetchData()
     </div>
     <div>
       <pupils v-if="tabIndex == 1" :students="students" />
-      <jurnal v-if="tabIndex == 2" :students="students"/>
-      <payments v-if="tabIndex == 3" :payment="payment"/>
-      <about v-if="tabIndex == 4" :students="students"/>
+      <jurnal v-if="tabIndex == 2" :students="students" />
+      <payments v-if="tabIndex == 3" :payment="payment" />
+      <about v-if="tabIndex == 4" :students="students" />
     </div>
   </div>
 </template>

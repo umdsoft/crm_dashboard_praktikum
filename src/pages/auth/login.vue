@@ -9,7 +9,7 @@ const userStore = useUserStore()
 const router = useRouter()
 
 const formData = ref({
-  phone: "+998911347773",
+  phone: "",
   password: "",
 });
 

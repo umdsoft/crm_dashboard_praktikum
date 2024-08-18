@@ -33,13 +33,13 @@ api.interceptors.response.use(
     if (err.response.status === 401) {
 
       try {
-        // const rs = await api.post("/user/refreshtoken", {
-        //   refreshToken: userStore.tokens.refreshToken,
-        // });
+        const rs = await api.post("/user/refreshtoken", {
+          refreshToken: userStore.tokens.refreshToken,
+        });
 
-        // const { accessToken } = rs.data;
+        const { accessToken } = rs.data;
 
-        //  userStore.setToken(response.data.tokens)
+        userStore.setToken(accessToken)
       } catch (_error) {
         return Promise.reject(_error);
       }

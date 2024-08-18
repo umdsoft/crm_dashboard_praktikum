@@ -6,6 +6,7 @@ import { api } from '@/api'
 import { useRouter } from 'vue-router'
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
+import addCourseModal from '../../../components/teacher/addCourseModal.vue';
 const users = ref([])
 
 const search = useDebouncedRef('', 1000)
@@ -13,31 +14,28 @@ const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
 const router = useRouter()
+const isAddModal = ref(false)
+
 function dateFormat(date) {
-  let date1 = dateformat(date, "dd.mm.yyyy | HH:MM");
-  return date1;
-}
-function dateFormat2(date) {
   let date1 = dateformat(date, "dd.mm.yyyy");
   return date1;
 }
 const fetchData = async () => {
   try {
-    const response = await api.get(`lesson/get-all${search.value ? `?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 10 - 10} `);
+    const response = await api.get(`lesson/get-all${search.value ? `?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 15 - 15} `);
     users.value = response.data.data
-    console.log(response.data.total)
     totalUsers.value = response.data.total
-    totalPages.value = Math.ceil(response.data.total / response.data.limit)
+    totalPages.value = Math.ceil(response.data.total / 15)
     currentPage.value
   } catch (error) {
     console.error('Error occurred:', error);
   }
 };
-const openModule = async (id) =>{
+const openModule = async (id) => {
   router.push({ name: 'lesson-module', params: { id: id } })
 }
-fetchData()
 
+fetchData()
 
 
 watch(currentPage, () => {
@@ -59,23 +57,15 @@ const goToPage = (page) => {
       <div>
         <div class="overflow-x-auto bg-white sm:rounded-lg">
           <div class="p-6 flex items-center justify-between mb-10">
-            <h1 class="text-xl text-[#29A0E3] font-medium">Darslar ro‘yhati</h1>
+            <h1 class="text-xl text-[#29A0E3] font-medium">Kurslar ro‘yhati</h1>
             <div class="flex items-center gap-2">
-
-              <download-excel :data="users" type="xlsx" name="filename.xlsx" class="flex  items-center text-[#29A0E3]">
-                Eksport excel
-                <Icon class="text-3xl" icon="material-symbols:download" />
-              </download-excel>
-              <div class="relative">
-                <input v-model="search" placeholder="ID bo'yicha qidiruv"
-                  class="focus:outline-none w-72 pr-12 border px-4 py-2 rounded" type="text">
-                <Icon class="text-[#666] text-2xl absolute top-1/2 right-5 -translate-y-1/2" icon="gg:search" />
-              </div>
+              <addCourseModal v-if="isAddModal" @close="isAddModal = false" />
               <button
                 class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
                 Filter
               </button>
-              <button class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
+              <button @click="isAddModal = true"
+                class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
                 <Icon class="text-lg" icon="ep:plus" />
                 Qo'shish
               </button>
@@ -93,35 +83,33 @@ const goToPage = (page) => {
                 <th class="px-6 py-3">Vaqti</th>
               </tr>
             </thead>
-       
+
             <tbody v-if="users.length > 0" class="text-center">
               <tr v-for="item, index in users" :key="index" @click="openModule(item.id)"
                 class=" border-b text-gray-900 font-medium hover:bg-gray-50 " style="cursor: pointer;">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                    {{ (currentPage - 1) * 10 + index + 1 }}
+                  {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
-            
                 <td class="px-6 py-4">
                   {{ item.direction_name }}
                 </td>
                 <td class="px-6 py-4">
                   {{ item.name }}
                 </td>
-
                 <td class="px-6 py-4">
                   {{ item.module_count }}
                 </td>
                 <td class="px-6 py-4">
-                    <span class="text-emerald-700 font-medium" v-if="item.lesson_type == 1">Asosiy</span>
+                  <span class="text-emerald-700 font-medium" v-if="item.lesson_type == 1">Asosiy</span>
                   <span class="text-yellow-500 font-medium" v-if="item.lesson_type == 2">Qo'shimcha</span>
                 </td>
                 <td class="px-6 py-4">
                   <span class="text-emerald-700 font-medium" v-if="item.lesson_status == 1">Aktiv</span>
-                  <span class="text-red-500 font-medium" v-if="item.lesson_status  == 2">Aktiv emas</span>
+                  <span class="text-red-500 font-medium" v-if="item.lesson_status == 2">Aktiv emas</span>
                 </td>
                 <td class="px-6 py-4">
                   {{ dateFormat(item.created) }}
-                </td>           
+                </td>
               </tr>
 
             </tbody>
