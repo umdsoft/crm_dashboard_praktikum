@@ -3,35 +3,28 @@ import { ref } from 'vue'
 import { api } from '@/api'
 
 const candidate = ref([])
-const props = defineProps(['group_id'])
+const props = defineProps(['group_id', 'group_data'])
+const group_data = ref(props.group_data)
 const fetchData = async () => {
   try {
-    const response = await api.get(`group/service`);
+    const response = await api.get(`group/get-mentor`);
     candidate.value = response.data.data
-    console.log(candidate.value)
   } catch (error) {
     console.error('Error occurred:', error);
   }
 };
 const data = ref({
-  student_id: null,
   group_id: props.group_id,
-  project_id: null,
-  amount: null,
-  social_status_id: null
+  start_date: null,
+  mentor: null
 })
-const checkStudent = async (student) => {
+
+const startGroup = async () => {
   try {
-    const response = await api.get(`group/check-student/${student}`);
-    console.log(response.data.data)
-  } catch (error) {
-    console.error('Error occurred:', error);
-  }
-}
-const addGroupStudent = async () => {
-  try {
-    await api.post('/group/create-group-student', data._value)
-    router.push(`/groups/${data.group_id}`)
+    await api.post('/group/start-group', data._value)
+    // router.push(`/groups/${data.group_id}`)
+
+    console.log('data', data._value)
 
   } catch (e) {
     console.log(e)
@@ -54,33 +47,26 @@ fetchData()
 
       <div class="my-5">
         <div class="flex justify-between border-b py-3 ">
-          <h1 class="font-semibold">F.I.O</h1>
-          <p class="text-gray-500">Umidbek Jumaniyozov</p>
+          <h1 class="font-semibold">Guruh</h1>
+          <p class="text-gray-500">{{ group_data.code }} | {{ group_data.name }} guruhi</p>
         </div>
-        <div class="flex justify-between border-b py-3 ">
-          <h1 class="font-semibold">Telefon raqami</h1>
-          <select class="w-[60%] px-5 py-3 focus:outline-none pr-4 bg-gray-100  rounded" name=""
-            v-model="data.project_id">
-            <option v-for="item, index in candidate[0]" :key="index" :value="item.id">{{ item.name }}</option>
+        <div class="flex justify-between border-b py-3  ">
+          <h1 class="font-semibold pt-3">O'qituvchi</h1>
+          <select class="w-[70%] px-5 py-3 focus:outline-none pr-4 bg-gray-100  rounded" name="" required
+            v-model="data.mentor">
+            <option v-for="item, index in candidate" :key="index" :value="item.id">{{ item.name }}</option>
           </select>
         </div>
-        <div class="flex justify-between border-b py-3 ">
-          <h1 class="font-semibold">ID raqami</h1>
-          <p class="text-gray-500">1000001AA</p>
+        <div class="flex justify-between py-3 ">
+          <h1 class="font-semibold pt-3">Boshlash vaqti</h1>
+          <input class="w-[59%] w-full px-5 py-3 focus:outline-none pr-12 bg-gray-100  rounded" type="date"
+            v-model="data.start_date" required>
         </div>
       </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <div class="col-span-2">
-          <input class="w-full px-5 py-3 focus:outline-none pr-12 bg-gray-100  rounded" type="text"
-            v-model="data.amount" placeholder="Summani kiriting">
-        </div>
-      </div>
-
 
       <div class="">
-        <button @click="addGroupStudent" class="w-full bg-[#166199] rounded py-2.5 px-5 mt-10 text-white ">
-          Guruhga qo‘shish
+        <button @click="startGroup" class="w-full bg-[#166199] rounded py-2.5 px-5 mt-10 text-white ">
+          Guruhga start berish
         </button>
       </div>
     </div>

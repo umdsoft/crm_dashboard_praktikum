@@ -4,7 +4,7 @@ import { api } from '@/api'
 import { message } from 'ant-design-vue';
 const candidate = ref([])
 const student = ref(null)
-const props = defineProps(['group_id'])
+const props = defineProps(['group_id', 'group_status'])
 const fetchData = async () => {
   try {
     const response = await api.get(`group/service`);
@@ -21,6 +21,7 @@ const data = ref({
   amount: null,
   social_status_id: null,
   student_uid: null,
+  status: props.group_status == 0 ? 0 : 1
 })
 const checkStudent = async (id) => {
   try {
@@ -36,10 +37,14 @@ const checkStudent = async (id) => {
 const addGroupStudent = async () => {
   try {
     data._value.student_id = student.value.id
-    // await api.post('/group/create-group-student', data._value)
-    // router.push(`/groups/${data.group_id}`)
-    console.log(data._value)
 
+    const response = await api.post('/group/create-group-student', data._value)
+    console.log('res', response.data)
+    if(response.data.success == false && response.data.msg == 'user-bor'){
+      return message.error('Ushbu o‘quvchi allaqachon guruhga qo‘shilgan.');
+    }
+    // this.$emit('close')
+    // router.push(`/groups/${data.group_id}`)
   } catch (e) {
     console.log(e)
   }
@@ -98,7 +103,7 @@ fetchData()
           </div>
           <div class="col-span-2">
             <input class="w-full px-5 py-3 focus:outline-none pr-12 bg-gray-100  rounded" type="text"
-              v-model="data.amount" placeholder="Summani kiriting">
+              v-model="data.amount" placeholder="Kurs narxini kiriting">
           </div>
         </div>
 

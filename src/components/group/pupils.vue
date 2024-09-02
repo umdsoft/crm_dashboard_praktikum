@@ -19,7 +19,7 @@ const fetchData = async () => {
     console.error('Error occurred:', error);
   }
 };
-const props = defineProps(['students'])
+const props = defineProps(['students','group_data'])
 
 watch(() => props.data, () => {
   fetchData()
@@ -67,12 +67,13 @@ fetchData()
                   <span v-if="item.project == null">-</span>
                   <span v-if="item.project != null">{{item.project}}</span>
                 </td>
-
                 <td class="px-6 py-2 text-center">
+                  <span v-if="item.status == 0" class="text-gray-500 font-medium">O'qish boshlanmagan</span>
                   <span v-if="item.status == 1" class="text-emerald-800 font-medium">O'qimoqda</span>
+                  <span v-if="item.status == 2" class="text-red-600 font-medium">Ketgan</span>
                 </td>
                 <td class="px-6 py-2 flex items-center justify-end gap-2">
-                  <button class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
+                  <button v-if="group_data.status == 1" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     Shartnomani yuklash
                   </button>
                   <button class="font-medium p-2  bg-red-500/20 rounded-md text-center">
