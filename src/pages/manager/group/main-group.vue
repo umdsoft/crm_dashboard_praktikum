@@ -23,6 +23,7 @@ const groupId = ref(route.params.id)
 const students = ref([])
 const payment = ref([])
 const group = ref(null)
+const tableKey = ref(1)
 
 const changeTab = (index) => {
   tabIndex.value = index
@@ -40,12 +41,18 @@ const fetchData = async () => {
   }
 }
 fetchData()
+
+function handleClose(){
+  isAddModal.value = false;
+  fetchData()
+  tableKey.value += 1
+}
 </script>
 
 <template>
   <div>
 
-    <AddGroupPupil v-if="isAddModal" @close="isAddModal = false" :group_id="groupId"
+    <AddGroupPupil v-if="isAddModal" @close="handleClose" :group_id="groupId"
       :group_status="getData.group.status" />
     <startGroup v-if="isStartModal" @close="isStartModal = false" :group_id="groupId" :group_data="getData.group" />
     <div class="">
@@ -58,9 +65,13 @@ fetchData()
             <Icon class="text-lg" icon="ep:plus" />
             O‘quvchi qo‘shish
           </button>
-          <button @click="isStartModal = true"
+          <button @click="isStartModal = true" v-if="group?.status == 0"
             class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
-            Kursni boshlash
+            Guruhga start berish
+          </button>
+          <button @click="isStartModal = true" v-if="group?.status == 1"
+            class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
+            Guruhni tugatish
           </button>
         </div>
       </div>

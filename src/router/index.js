@@ -99,6 +99,17 @@ const router = createRouter({
           name: 'manager',
           component: () => import('@/pages/manager/home.vue')
         },
+        {
+          path: '/payment',
+          name: 'payment',
+          component: () => import('@/pages/manager/payment/index.vue'),
+        },
+        {
+          path: '/payment/student',
+          name: 'studentDetail',
+          component: () => import('@/pages/manager/payment/payUserDetail.vue'),
+        },
+        
       ],
 
     },

@@ -47,6 +47,11 @@ const sidebarMenu = ref([
     url: '/lesson',
     icon: 'material-symbols:play-lesson-outline'
   },
+  {
+    name: 'To‘lovlar',
+    url: '/payment',
+    icon: 'emojione-monotone:money-bag'
+  },
 ])
 
 // const sidebarMenus = ref([

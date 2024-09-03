@@ -5,6 +5,7 @@ import { message } from 'ant-design-vue';
 const candidate = ref([])
 const student = ref(null)
 const props = defineProps(['group_id', 'group_status'])
+const emit = defineEmits(['close'])
 const fetchData = async () => {
   try {
     const response = await api.get(`group/service`);
@@ -39,11 +40,11 @@ const addGroupStudent = async () => {
     data._value.student_id = student.value.id
 
     const response = await api.post('/group/create-group-student', data._value)
-    console.log('res', response.data)
     if(response.data.success == false && response.data.msg == 'user-bor'){
       return message.error('Ushbu o‘quvchi allaqachon guruhga qo‘shilgan.');
     }
-    // this.$emit('close')
+    message.success('Muvvafaqiyatli qo‘shildi.');
+    emit('close')
     // router.push(`/groups/${data.group_id}`)
   } catch (e) {
     console.log(e)

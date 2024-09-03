@@ -1,12 +1,12 @@
 <script setup>
 import { ref, watch } from 'vue'
 import dateformat from "dateformat";
-
+import { useRouter } from 'vue-router'
 import PaymentUser from '../../components/group/paymentUser.vue'
 const props = defineProps(['payment', 'group_data'])
 const currentPage = ref(1)
 const isPaymentModal = ref(false)
-
+const router = useRouter()
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy");
   return date1;
@@ -26,11 +26,12 @@ payments.value = props.payment
 watch(() => props.data, () => {
   fetchData()
 }, { immediate: true })
-
+function goDetailPage(group_id, student_id) {
+    router.push({ name: 'studentDetail', query: { group_id, student_id } })
+}
 const paymodal = (student_id) => {
   isPaymentModal.value = true
   students_id.value = student_id
-  console.log('sss', student_id)
 }
 
 fetchData()
@@ -86,6 +87,10 @@ fetchData()
                   {{ dateFormat(item.payment_date) }}
                 </td>
                 <td class="px-6 py-2 flex items-center justify-end gap-2">
+                  <button @click="goDetailPage(props.group_data?.id,item.student_id)"
+                    class="bg-[#E6F4F2] py-1.5 px-4 rounded flex  items-center text-[#008E76] hover:bg-[#008E76] hover:text-white">
+                    To'lov qilish
+                  </button>
                   <button @click="paymodal(item.student_id)"
                     class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     To'lov grafigini yuklash
