@@ -105,6 +105,8 @@ const goToPage = (page) => {
                                         v-if="item.status == 0 && new Date(item.payment_date) < new Date()">Qarzdorlik</span>
                                     <span class="text-yellow-500 font-medium"
                                         v-if="item.status == 0 && new Date(item.payment_date) > new Date()">To‘lanmagan</span>
+                                        <span class="text-red-500 font-medium"
+                                        v-if="item.status == 2">Bekor qilingan</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ dateFormat(item.payment_date) }}

@@ -35,7 +35,6 @@ const fetchData = async () => {
     getData.value = datas.data
     const response = await api.get(`group/get-all${search.value ? `search?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 15 - 15} `);
     users.value = response.data.data
-    console.log(users.value)
     totalUsers.value = response.data.total
     totalPages.value = Math.ceil(response.data.total / response.data.limit)
     currentPage.value

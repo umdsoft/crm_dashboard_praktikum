@@ -1,17 +1,10 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { Icon } from '@iconify/vue';
-import Pagination from '@/components/Pagination.vue';
-import { api } from '@/api'
-import { useRouter } from 'vue-router'
-import { useDebouncedRef } from '@/composables/debouncedRef.js'
-
-const users = ref([])
-
-const search = useDebouncedRef('', 1000)
-const totalUsers = ref()
+import Register from './register.vue'
 const currentPage = ref(1)
-const totalPages = ref(1)
+
+const isRegisterModal = ref(false)
 
 const fetchData = async () => {
   try {
@@ -19,13 +12,11 @@ const fetchData = async () => {
     console.error('Error occurred:', error);
   }
 };
-const props = defineProps(['students'])
+const props = defineProps(['students', 'group_data'])
 
-watch(() => props.data, () => {
-  fetchData()
-}, { immediate: true })
-
-
+async function handleClose() {
+  isRegisterModal.value = false
+}
 fetchData()
 
 </script>
@@ -34,15 +25,20 @@ fetchData()
   <div>
     <div class="">
       <div>
+        <Register v-if="isRegisterModal" @close="handleClose" :students="props.students" />
         <div class="overflow-x-auto bg-white sm:rounded-lg py-5">
+          <div class="flex justify-end">
+            <button @click="isRegisterModal = true" v-if="props.group_data?.status == 1"
+              class="bg-[#166199] my-2 mr-6 rounded py-2.5 px-5 flex gap-1 text-white">
+              Yo'qlama qilish
+            </button>
+          </div>
           <table class="w-full text-sm rtl:text-right">
             <thead class="text-sm text-gray-700">
               <tr>
                 <th class="px-6 py-3 text-center">#</th>
                 <th class="px-6 py-3 text-center">O'quvchi kodi</th>
-                <th class="px-6 py-3 text-center">
-                  O'quvchi
-                </th>
+                <th class="px-6 py-3 text-center">O'quvchi</th>
                 <th class="px-6 py-3 text-center">Telefon</th>
                 <th class="px-6 py-3 text-center">Loyiha</th>
                 <th class="px-6 py-3 text-center">Status</th>
@@ -65,7 +61,7 @@ fetchData()
                 </td>
                 <td class="px-6 py-2 text-center">
                   <span v-if="item.project == null">-</span>
-                  <span v-if="item.project != null">{{item.project}}</span>
+                  <span v-if="item.project != null">{{ item.project }}</span>
                 </td>
 
                 <td class="px-6 py-2 text-center">

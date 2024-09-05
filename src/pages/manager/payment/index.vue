@@ -87,8 +87,10 @@ const goToPage = (page) => {
                             statistic.totalAmountThisDay?.count?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}
                             <span class="text-white">ta</span>| <span
                                 class="flex items-center gap-1.5 text-xl font-mono text-white">{{
-                                    statistic.totalAmountThisDay?.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}
-                                <span class="text-white">so‘m</span></span> </h2>
+                                    statistic.totalAmountThisDay?.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                                }}
+                                <span class="text-white">so‘m</span></span>
+                        </h2>
                     </div>
                 </div>
                 <div class="flex flex-col items-center  rounded-lg p-3 border-1 border-[#166199] bg-[#0891b2]">
@@ -99,7 +101,7 @@ const goToPage = (page) => {
                     <div>
                         <h2 class="flex items-center gap-1.5 text-xl font-mono text-white">{{
                             statistic.totalAmountThisMonth?.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-                            }}<span class="text-white">so‘m</span></h2>
+                        }}<span class="text-white">so‘m</span></h2>
                     </div>
                 </div>
 
@@ -167,7 +169,7 @@ const goToPage = (page) => {
                                 <td class="px-6 py-4">
                                     {{ item.code }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="">
                                     {{ item.full_name }}
                                 </td>
                                 <td class="px-6 py-4">
@@ -182,6 +184,7 @@ const goToPage = (page) => {
                                         v-if="item.status == 0 && new Date(item.payment_date) < new Date()">Qarzdorlik</span>
                                     <span class="text-yellow-500 font-medium"
                                         v-if="item.status == 0 && new Date(item.payment_date) > new Date()">To‘lanmagan</span>
+                                    <span class="text-red-500 font-medium" v-if="item.status == 2">Bekor qilingan</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ dateFormat(item.payment_date) }}

@@ -52,12 +52,12 @@ fetchData()
 
           </tr>
         </thead>
-        <tbody class="text-base">
-          <tr class=" border-b hover:bg-gray-50 m-5" v-if="candidate != null" v-for="item, index in candidate"
-            :key="index" :value="item.id">
+        <tbody class="text-base" v-if="candidate != null">
+          <tr class=" border-b hover:bg-gray-50 m-5" v-for="item, index in candidate" :key="index" :value="item.id">
             <td scope="row" class="px-6 py-2 whitespace-nowrap text-center ">
               <span class="text-red-600" v-if="item.status == 0 && new Date(item.payment_date) < new Date()"> {{
                 dateFormat(item.payment_date) }} </span>
+              <span v-if="item.status == 2"> {{ dateFormat(item.payment_date) }} </span>
               <span class="text-green-600" v-if="item.status == 1">{{ dateFormat(item.payment_date) }}</span>
               <span v-if="item.status == 0 && new Date(item.payment_date) > new Date()">{{ dateFormat(item.payment_date)
                 }}</span>
@@ -66,19 +66,22 @@ fetchData()
               <span class="text-red-600" v-if="item.status == 0 && new Date(item.payment_date) < new Date()">{{
                 item.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} so‘m</span>
 
-              <span class="text-green-600" v-if="item.status == 1">{{ item.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} so‘m</span>
-              <span v-if="item.status == 0 && new Date(item.payment_date) > new Date()">{{ item.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} so‘m</span>
+              <span class="text-green-600" v-if="item.status == 1">{{
+                item.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} so‘m</span>
+              <span v-if="item.status == 0 && new Date(item.payment_date) > new Date()">{{
+                item.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} so‘m</span>
+              <span v-if="item.status == 2">-</span>
             </td>
             <td class="px-6 py-2 text-center">
               <span v-if="item.pay_type != null">{{ item.pay_type }}</span>
               <span v-if="item.pay_type == null">-</span>
             </td>
-            <td class="px-6 py-2 text-center">
+            <td class="py-2 text-center">
               <span class="text-red-600"
                 v-if="item.status == 0 && new Date(item.payment_date) < new Date()">Qarzdorlik</span>
-
               <span class="text-green-600" v-if="item.status == 1">To‘langan</span>
               <span v-if="item.status == 0 && new Date(item.payment_date) > new Date()">To‘lanmagan</span>
+              <span class="text-red-600" v-if="item.status == 2">Bekor qilingan</span>
             </td>
           </tr>
         </tbody>

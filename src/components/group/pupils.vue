@@ -1,17 +1,22 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { Icon } from '@iconify/vue';
-import Pagination from '@/components/Pagination.vue';
+import { message } from 'ant-design-vue';
 import { api } from '@/api'
-import { useRouter } from 'vue-router'
-import { useDebouncedRef } from '@/composables/debouncedRef.js'
+const emit = defineEmits(['close'])
+const confirm = async (student_id) => {
+  // console.log(e);
+  await api.post(`group/delete-student/${student_id}`)
+  message.success(`O'quvchi guruhdan o'chirildi!`);
+  emit('close')
+};
+const cancel = e => {
+  console.log(e);
+  message.error('Click on No');
+};
 
-const users = ref([])
 
-const search = useDebouncedRef('', 1000)
-const totalUsers = ref()
 const currentPage = ref(1)
-const totalPages = ref(1)
 
 const fetchData = async () => {
   try {
@@ -19,7 +24,7 @@ const fetchData = async () => {
     console.error('Error occurred:', error);
   }
 };
-const props = defineProps(['students','group_data'])
+const props = defineProps(['students', 'group_data'])
 
 watch(() => props.data, () => {
   fetchData()
@@ -54,6 +59,7 @@ fetchData()
                 <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap text-center ">
                   {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
+
                 <td class="px-6 py-2 text-center">
                   {{ item.code }}
                 </td>
@@ -65,20 +71,26 @@ fetchData()
                 </td>
                 <td class="px-6 py-2 text-center">
                   <span v-if="item.project == null">-</span>
-                  <span v-if="item.project != null">{{item.project}}</span>
+                  <span v-if="item.project != null">{{ item.project }}</span>
                 </td>
                 <td class="px-6 py-2 text-center">
                   <span v-if="item.status == 0" class="text-gray-500 font-medium">O'qish boshlanmagan</span>
                   <span v-if="item.status == 1" class="text-emerald-800 font-medium">O'qimoqda</span>
                   <span v-if="item.status == 2" class="text-red-600 font-medium">Ketgan</span>
+                  <span v-if="item.status == 3" class="text-yellow-600 font-medium">O'qishni bitirgan</span>
                 </td>
                 <td class="px-6 py-2 flex items-center justify-end gap-2">
                   <button v-if="group_data.status == 1" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     Shartnomani yuklash
                   </button>
-                  <button class="font-medium p-2  bg-red-500/20 rounded-md text-center">
-                    <Icon class="text-2xl text-red-500" icon="ph:trash" />
-                  </button>
+                  <a-popconfirm placement="topLeft" title="O'quvchini guruhdan o'chirishni xoxlaysizmi?"
+                    ok-type="danger" ok-text="Ha" cancel-text="Yo'q" @confirm="confirm(item.gid)" @cancel="cancel">
+                    <button class="font-medium p-2  bg-red-500/20 rounded-md text-center"
+                      v-if="group_data?.status != 2">
+                      <Icon class="text-2xl text-red-500" icon="ph:trash" />
+                    </button>
+                  </a-popconfirm>
+
                 </td>
               </tr>
             </tbody>
