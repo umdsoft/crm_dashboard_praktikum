@@ -25,23 +25,7 @@ function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy");
   return date1;
 }
-const checkStudent = async (student) => {
-  try {
-    const response = await api.get(`student/`);
-    console.log(response.data.data)
-  } catch (error) {
-    console.error('Error occurred:', error);
-  }
-}
-const addGroupStudent = async () => {
-  try {
-    await api.post('/group/create-group-student', data._value)
-    router.push(`/groups/${data.group_id}`)
 
-  } catch (e) {
-    console.log(e)
-  }
-}
 fetchData()
 
 </script>

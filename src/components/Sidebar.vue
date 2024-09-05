@@ -52,6 +52,11 @@ const sidebarMenu = ref([
     url: '/payment',
     icon: 'emojione-monotone:money-bag'
   },
+  {
+    name: 'Ish haqi hisoboti',
+    url: '/salary-report',
+    icon: 'majesticons:money-hand-line'
+  },
 ])
 
 // const sidebarMenus = ref([

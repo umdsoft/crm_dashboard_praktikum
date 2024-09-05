@@ -17,17 +17,20 @@ const fetchData = async () => {
         console.error('Error occurred:', error);
     }
 };
-const data = ref({
+let data = ref({
     pay_type: null,
     amount: null,
-    type: null
+    type: null,
+    teacher_id: candidate.value.main_mentor
 })
 
 const addGroupStudent = async () => {
     try {
+        data._value.teacher_id = candidate.value.main_mentor
         await api.post(`payment/pay/${props.payid}`, data._value)
         message.success('Muvvafaqiyatli to‘landi.');
         emit('close')
+        console.log('dds',data._value)
     } catch (e) {
         console.log(e)
     }

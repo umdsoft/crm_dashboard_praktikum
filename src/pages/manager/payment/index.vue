@@ -73,7 +73,7 @@ const goToPage = (page) => {
                     <p class="text-base text-white mb-1.5 mt-1">Umumiy qarzdorlik</p>
                     <div>
                         <h2 class="flex items-center gap-1.5 text-xl font-mono text-white">{{
-                            statistic.qarz?.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} <span
+                            statistic.qarz.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} <span
                                 class="text-white">so‘m</span></h2>
                     </div>
                 </div>
@@ -84,10 +84,10 @@ const goToPage = (page) => {
                     <p class="text-base text-white mb-1.5 mt-1">Bugungi to'lovlar</p>
                     <div>
                         <h2 class="flex items-center gap-1.5 text-xl font-mono text-white">{{
-                            statistic.totalAmountThisDay?.count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}
+                            statistic.totalAmountThisDay?.count?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}
                             <span class="text-white">ta</span>| <span
                                 class="flex items-center gap-1.5 text-xl font-mono text-white">{{
-                                    statistic.totalAmountThisDay?.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}
+                                    statistic.totalAmountThisDay?.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}
                                 <span class="text-white">so‘m</span></span> </h2>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ const goToPage = (page) => {
                     <p class="text-base text-white mb-1.5 mt-1">Oylik tushum</p>
                     <div>
                         <h2 class="flex items-center gap-1.5 text-xl font-mono text-white">{{
-                            statistic.totalAmountThisMonth?.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                            statistic.totalAmountThisMonth?.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
                             }}<span class="text-white">so‘m</span></h2>
                     </div>
                 </div>
@@ -111,7 +111,7 @@ const goToPage = (page) => {
                     <div>
 
                         <h2 class="flex items-center gap-1.5 text-xl font-mono text-white">{{
-                            statistic.totalThisMonth?.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} <span
+                            statistic.totalThisMonth?.amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }} <span
                                 class="text-white">so'm</span></h2>
                     </div>
                 </div>

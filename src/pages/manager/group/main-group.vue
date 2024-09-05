@@ -1,22 +1,21 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-
 import startGroup from '../../../components/group/startGroup.vue';
 import pupils from '@/components/group/pupils.vue';
 import jurnal from '@/components/group/jurnal.vue';
 import payments from '@/components/group/payments.vue';
 import about from '@/components/group/about.vue';
 import { api } from '@/api'
-
 import AddGroupPupil from '../../../components/group/addGroupPupil.vue';
-
+import { message } from 'ant-design-vue';
 
 const route = useRoute()
 
 const isAddModal = ref(false)
 const isStartModal = ref(false)
 
+const lessonStatus = ref()
 const getData = ref([])
 const tabIndex = ref(1)
 const groupId = ref(route.params.id)
@@ -32,6 +31,8 @@ const changeTab = (index) => {
 const fetchData = async () => {
   try {
     const response = await api.get(`group/get/${groupId.value}`);
+    lessonStatus.value = response.data.lessonGroup
+    console.log(lessonStatus.value)
     getData.value = response.data
     students.value = getData.value.groupStudents
     payment.value = getData.value.payment
@@ -41,8 +42,20 @@ const fetchData = async () => {
   }
 }
 fetchData()
-
-function handleClose(){
+const startData = ref({
+  group_id: null
+})
+async function startLesson(group_id) {
+  startData._value.group_id = group_id
+  const response = await api.post('group/start-lesson', startData._value)
+  if (response.data.err == 'lesson-started') {
+    return message.error('Ushbu guruhga start berilgan.');
+  }
+  message.success('Guruh darsni boshladi!');
+  fetchData()
+  tableKey.value += 1
+}
+function handleClose() {
   isAddModal.value = false;
   fetchData()
   tableKey.value += 1
@@ -52,18 +65,26 @@ function handleClose(){
 <template>
   <div>
 
-    <AddGroupPupil v-if="isAddModal" @close="handleClose" :group_id="groupId"
-      :group_status="getData.group.status" />
+    <AddGroupPupil v-if="isAddModal" @close="handleClose" :group_id="groupId" :group_status="getData.group.status" />
     <startGroup v-if="isStartModal" @close="isStartModal = false" :group_id="groupId" :group_data="getData.group" />
     <div class="">
       <div class="pt-5 flex items-center justify-between mb-10">
-        <h1 class="text-xl text-[#29A0E3] font-medium" v-if="group != null">{{group.code}} | {{group.name}} guruhi</h1>
+        <h1 class="text-xl text-[#29A0E3] font-medium" v-if="group != null">{{ group.code }} | {{ group.name }} guruhi
+        </h1>
 
         <div class="flex items-center gap-2">
           <button @click="isAddModal = true"
             class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex gap-1  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
             <Icon class="text-lg" icon="ep:plus" />
             O‘quvchi qo‘shish
+          </button>
+          <button @click="startLesson(groupId)" v-if="group?.status == 1 && lessonStatus == null"
+            class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
+            Darsni boshlash
+          </button>
+          <button @click="startLesson(groupId)" v-if="group?.status == 1 && lessonStatus != null"
+            class="bg-green-600 rounded py-2.5 px-5 flex gap-1 items-center text-white">
+            Darsni yakunlash
           </button>
           <button @click="isStartModal = true" v-if="group?.status == 0"
             class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
@@ -76,7 +97,7 @@ function handleClose(){
         </div>
       </div>
     </div>
-  
+
     <div class="grid grid-cols-4 mb-10 bg-gray-300 rounded-md overflow-hidden">
       <button @click="changeTab(1)" :class="tabIndex == 1 ? 'bg-white text-primary' : ''"
         class="flex font-semibold   justify-center gap-5 p-5">
@@ -103,7 +124,7 @@ function handleClose(){
     <div>
       <pupils v-if="tabIndex == 1" :students="students" :group_data="getData.group" />
       <jurnal v-if="tabIndex == 2" :students="students" />
-      <payments v-if="tabIndex == 3" :payment="payment" :group_data="group"/>
+      <payments v-if="tabIndex == 3" :payment="payment" :group_data="group" />
       <about v-if="tabIndex == 4" :students="students" />
     </div>
   </div>

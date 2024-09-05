@@ -109,7 +109,11 @@ const router = createRouter({
           name: 'studentDetail',
           component: () => import('@/pages/manager/payment/payUserDetail.vue'),
         },
-        
+        {
+          path: '/salary-report',
+          name: 'salaryReport',
+          component: () => import('@/pages/bugalter/salary_report.vue'),
+        },
       ],
 
     },
