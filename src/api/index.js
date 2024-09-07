@@ -33,8 +33,8 @@ api.interceptors.response.use(
     if (err.response.status === 401) {
 
       try {
-        const rs = await api.post("/user/refreshtoken", {
-          refreshToken: userStore.tokens.refreshToken,
+        const rs = await api.post("/user/refresh-token", {
+          accessToken: userStore.tokens.refreshToken,
         });
 
         const { accessToken } = rs.data;

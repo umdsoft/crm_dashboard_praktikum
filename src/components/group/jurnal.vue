@@ -5,30 +5,22 @@ import Register from './register.vue'
 const currentPage = ref(1)
 
 const isRegisterModal = ref(false)
-
-const fetchData = async () => {
-  try {
-  } catch (error) {
-    console.error('Error occurred:', error);
-  }
-};
-const props = defineProps(['students', 'group_data'])
+const props = defineProps(['students', 'group_data', 'group_lesson'])
 
 async function handleClose() {
   isRegisterModal.value = false
 }
-fetchData()
-
 </script>
 
 <template>
   <div>
     <div class="">
       <div>
-        <Register v-if="isRegisterModal" @close="handleClose" :students="props.students" />
+        <Register v-if="isRegisterModal" @close="handleClose" :students="props.students" :group_id="props.group_data"
+          :group_lesson="props.group_lesson" />
         <div class="overflow-x-auto bg-white sm:rounded-lg py-5">
           <div class="flex justify-end">
-            <button @click="isRegisterModal = true" v-if="props.group_data?.status == 1"
+            <button @click="isRegisterModal = true" v-if="props.group_data?.status == 1 && props.group_lesson != null"
               class="bg-[#166199] my-2 mr-6 rounded py-2.5 px-5 flex gap-1 text-white">
               Yo'qlama qilish
             </button>

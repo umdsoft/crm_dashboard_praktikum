@@ -80,7 +80,6 @@ function handleClose() {
   tableKey.value += 1
 }
 function handleClose1() {
-
   fetchData()
   tableKey.value += 1
 }
@@ -151,7 +150,7 @@ function handleClose1() {
     </div>
     <div>
       <pupils v-if="tabIndex == 1" :students="students" :group_data="getData.group" @close="handleClose1" />
-      <jurnal v-if="tabIndex == 2" :students="students" :group_data="getData.group" />
+      <jurnal v-if="tabIndex == 2" :students="students" :group_data="getData.group" :group_lesson="lessonStatus" />
       <payments v-if="tabIndex == 3" :payment="payment" :group_data="group" />
       <about v-if="tabIndex == 4" :students="students" />
     </div>
