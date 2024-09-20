@@ -4,6 +4,7 @@ import { Icon } from '@iconify/vue';
 import { message } from 'ant-design-vue';
 import { api } from '@/api'
 const emit = defineEmits(['close'])
+const props = defineProps(['students', 'group_data'])
 const confirm = async (student_id) => {
   // console.log(e);
   await api.post(`group/delete-student/${student_id}`)
@@ -24,7 +25,7 @@ const fetchData = async () => {
     console.error('Error occurred:', error);
   }
 };
-const props = defineProps(['students', 'group_data'])
+
 
 watch(() => props.data, () => {
   fetchData()
@@ -59,7 +60,7 @@ fetchData()
                 <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap text-center ">
                   {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
-
+                
                 <td class="px-6 py-2 text-center">
                   {{ item.code }}
                 </td>

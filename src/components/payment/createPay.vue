@@ -19,6 +19,7 @@ const fetchData = async () => {
 };
 let data = ref({
     pay_type: null,
+    pay_data: null,
     amount: null,
     type: null,
     teacher_id: candidate.value.main_mentor
@@ -30,7 +31,6 @@ const addGroupStudent = async () => {
         await api.post(`payment/pay/${props.payid}`, data._value)
         message.success('Muvvafaqiyatli to‘landi.');
         emit('close')
-        console.log('dds',data._value)
     } catch (e) {
         console.log(e)
     }
@@ -84,10 +84,11 @@ fetchData()
                             </option>
                         </select>
                     </div>
-                    <!-- <div class="col-span-1">
-                        <input class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" type="text"
-                            v-model="data.amount" placeholder="Kurs narxini kiriting">
-                    </div> -->
+                    <div class="col-span-1">
+                        <p>To‘lov vaqtini kiriting</p>
+                        <input class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" type="date"
+                            v-model="data.pay_data" placeholder="Kurs narxini kiriting">
+                    </div>
                 </div>
 
 

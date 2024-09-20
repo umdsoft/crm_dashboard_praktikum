@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import { api } from '@/api'
-
+import { message } from 'ant-design-vue';
 const candidate = ref([])
 const props = defineProps(['group_id', 'group_data'])
 const group_data = ref(props.group_data)
+const emit = defineEmits(['close'])
 const fetchData = async () => {
   try {
     const response = await api.get(`group/get-mentor`);
@@ -21,11 +22,11 @@ const data = ref({
 
 const startGroup = async () => {
   try {
-    await api.post('/group/start-group', data._value)
-    // router.push(`/groups/${data.group_id}`)
-
-    console.log('data', data._value)
-
+    const response = await api.post('/group/start-group', data._value)
+    if (response.data.msg == 'group-stared') {
+      return message.error(`Guruhga start berilgan`);
+    }
+    emit('close')
   } catch (e) {
     console.log(e)
   }
