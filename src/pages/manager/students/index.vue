@@ -6,13 +6,14 @@ import { api } from '@/api'
 import { useRouter } from 'vue-router'
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
+import UserEdit from '../../../components/student/edit.vue'
 const users = ref([])
 
 const search = useDebouncedRef('', 1000)
 const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
-
+const isAddModal = ref(false)
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy | HH:MM");
   return date1;
@@ -48,7 +49,11 @@ watch(search, () => {
 const createPupil = () => {
   router.push('/create-pupil')
 }
-
+function handleClose() {
+  isAddModal.value = false;
+  fetchData()
+  tableKey.value += 1
+}
 const goToPage = (page) => {
   currentPage.value = page;
 }
@@ -57,6 +62,7 @@ const goToPage = (page) => {
 <template>
   <div>
     <div class="">
+      <UserEdit v-if="isAddModal" @close="handleClose" />
       <div>
         <div class="overflow-x-auto bg-white sm:rounded-lg">
           <div class="p-6 flex items-center justify-between mb-10">
@@ -91,6 +97,7 @@ const goToPage = (page) => {
                 <th class="px-6 py-3 ">Tug'ilgan sanasi</th>
                 <th class="px-6 py-3">Jinsi</th>
                 <th class="px-6 py-3">Ro'yhatga olingan vaqti</th>
+                <th class="px-6 py-3">Amaliyot</th>
               </tr>
             </thead>
             <tbody v-if="users.length > 0" class="text-center">
@@ -115,6 +122,11 @@ const goToPage = (page) => {
                 </td>
                 <td class="px-6 py-4">
                   {{ dateFormat(item.created) }}
+                </td>
+                <td>
+                  <button @click="isAddModal = true" class="font-medium p-2  bg-sky-500/20 rounded-md text-center">
+                    <Icon class="text-2xl text-sky-500" icon="mingcute:user-edit-fill" />
+                  </button>
                 </td>
               </tr>
 

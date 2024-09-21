@@ -60,7 +60,7 @@ fetchData()
                 <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap text-center ">
                   {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
-                
+
                 <td class="px-6 py-2 text-center">
                   {{ item.code }}
                 </td>
@@ -84,6 +84,10 @@ fetchData()
                   <button v-if="group_data.status == 1" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     Shartnomani yuklash
                   </button>
+                  <a :href="`https://app.praktikum-academy.uz/api/student/certificate/${item.cert_code}`"
+                    v-if="group_data.status == 2" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
+                    Sertifikatni yuklash
+                  </a>
                   <a-popconfirm placement="topLeft" title="O'quvchini guruhdan o'chirishni xoxlaysizmi?"
                     ok-type="danger" ok-text="Ha" cancel-text="Yo'q" @confirm="confirm(item.gid)" @cancel="cancel">
                     <button class="font-medium p-2  bg-red-500/20 rounded-md text-center"
