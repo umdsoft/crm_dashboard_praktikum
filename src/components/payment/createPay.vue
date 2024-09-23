@@ -6,27 +6,41 @@ const candidate = ref([])
 const payType = ref([])
 const props = defineProps(['payid'])
 const emit = defineEmits(['close'])
-const fetchData = async () => {
-    try {
-        const response = await api.get(`payment/one-pay/${props.payid}`);
-        const paytype = await api.get('payment/get-pay-type')
-        payType.value = paytype.data.data
-        candidate.value = response.data.data
-        console.log(candidate.value)
-    } catch (error) {
-        console.error('Error occurred:', error);
-    }
-};
 let data = ref({
     pay_type: null,
     pay_data: null,
     amount: null,
     type: null,
+    pay_tolov: 1,
+    last_pay_data: null,
     teacher_id: candidate.value.main_mentor
 })
+const fetchData = async () => {
+    try {
+
+        const response = await api.get(`payment/one-pay/${props.payid}`);
+        const paytype = await api.get('payment/get-pay-type')
+        payType.value = paytype.data.data
+        candidate.value = response.data.data
+        data.value.amount = response.data.data.amount
+
+    } catch (error) {
+        console.error('Error occurred:', error);
+    }
+};
+
 
 const addGroupStudent = async () => {
     try {
+        if (data.value.pay_type == null) {
+            return message.error('To‘lov turini tanlang.');
+        }
+        if (data.value.pay_data == null) {
+            return message.error('To‘lov vaqtini kiriting.');
+        }
+        if (data.value.pay_data == '2' && data.value.last_pay_data == null) {
+            return message.error('Keyingi to‘lov vaqtini kiriting.');
+        }
         data._value.teacher_id = candidate.value.main_mentor
         await api.post(`payment/pay/${props.payid}`, data._value)
         message.success('Muvvafaqiyatli to‘landi.');
@@ -79,7 +93,7 @@ fetchData()
                         <p>To‘lov turini tanlang
                         </p>
                         <select class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" name=""
-                            v-model="data.pay_type">
+                            v-model="data.pay_type" required>
                             <option v-for="item, index in payType" :key="index" :value="item.id">{{ item.name }}
                             </option>
                         </select>
@@ -89,6 +103,27 @@ fetchData()
                         <input class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" type="date"
                             v-model="data.pay_data" placeholder="Kurs narxini kiriting">
                     </div>
+                    <div>
+                        <p>To‘lov holati
+                        </p>
+                        <select class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" name=""
+                            v-model="data.pay_tolov">
+                            <option value="1">To‘liq to‘lash</option>
+                            <option value="2">Qisman to‘lash</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1" v-if="data.pay_tolov == '2'">
+                        <p>Keyingi to‘lov vaqtini kiriting</p>
+                        <input class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" type="date"
+                            v-model="data.last_pay_data" placeholder="Kurs narxini kiriting" required>
+                    </div>
+                    <div class="col-span-1">
+                        <p>To‘lov summasi</p>
+                        <input class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" type="text"
+                            v-model="data.amount" placeholder="Kurs narxini kiriting">
+                    </div>
+                    <p v-if="data.pay_tolov == '2'">Qoldiq summa: <b>{{ (candidate.amount -
+                        data.amount)?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}</b> so‘m</p>
                 </div>
 
 
