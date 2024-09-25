@@ -19,13 +19,14 @@ const data = ref({
   start_date: null,
   mentor: null
 })
-
+// 
 const startGroup = async () => {
   try {
     const response = await api.post('/group/start-group', data._value)
     if (response.data.msg == 'group-stared') {
       return message.error(`Guruhga start berilgan`);
     }
+    message.success(`Guruhga start berildi`);
     emit('close')
   } catch (e) {
     console.log(e)

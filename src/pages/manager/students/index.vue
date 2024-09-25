@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router'
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
 import UserEdit from '../../../components/student/edit.vue'
+import AddStudent from '../../../components/student/addStudent.vue'
 const users = ref([])
 
 const search = useDebouncedRef('', 1000)
@@ -14,6 +15,7 @@ const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
 const isAddModal = ref(false)
+const isStartModal = ref(false)
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy | HH:MM");
   return date1;
@@ -51,6 +53,7 @@ const createPupil = () => {
 }
 function handleClose() {
   isAddModal.value = false;
+  isStartModal.value = false
   fetchData()
   tableKey.value += 1
 }
@@ -63,6 +66,7 @@ const goToPage = (page) => {
   <div>
     <div class="">
       <UserEdit v-if="isAddModal" @close="handleClose" />
+      <AddStudent v-if="isStartModal" @close="handleClose" />
       <div>
         <div class="overflow-x-auto bg-white sm:rounded-lg">
           <div class="p-6 flex items-center justify-between mb-10">
@@ -82,7 +86,8 @@ const goToPage = (page) => {
                 class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
                 Filter
               </button>
-              <button @click="createPupil" class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
+              <button @click="isStartModal = true"
+                class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
                 <Icon class="text-lg" icon="ep:plus" />
                 Qo'shish
               </button>

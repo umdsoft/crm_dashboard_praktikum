@@ -32,15 +32,7 @@ const router = createRouter({
           name: "students",
           component: () => import("@/pages/manager/students/index.vue"),
           meta: { requiresAuth: true },
-          children: [
-            {
-              path: "/create-pupil",
-              name: "createPupils",
-              component: () => import("@/pages/manager/group/create-pupil.vue"),
-
-              meta: { requiresAuth: true },
-            },
-          ],
+        
         },
         {
           path: "/lesson",
@@ -125,6 +117,18 @@ const router = createRouter({
           path: "/salary-report",
           name: "salaryReport",
           component: () => import("@/pages/bugalter/salary_report.vue"),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "/last-lesson",
+          name: "last-lesson",
+          component: () => import("@/pages/manager/check-lesson/index.vue"),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "/last-lesson/:id",
+          name: "last-lesson-id",
+          component: () => import("@/pages/manager/check-lesson/by.vue"),
           meta: { requiresAuth: true },
         },
       ],

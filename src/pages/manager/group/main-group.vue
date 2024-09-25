@@ -83,7 +83,7 @@ function handleClose1() {
   tableKey.value += 1
 }
 function handleCloseStart() {
-  isStartModal = false
+  isStartModal.value = false
   fetchData()
   tableKey.value += 1
 }

@@ -37,6 +37,9 @@ const checkStudent = async (id) => {
 }
 const addGroupStudent = async () => {
   try {
+    if(data.value.amount == null) {
+      return message.error('To‘lov summasini kiriting!');
+    }
     data._value.student_id = student.value.id
 
     const response = await api.post('/group/create-group-student', data._value)
