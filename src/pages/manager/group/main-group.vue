@@ -32,7 +32,6 @@ const fetchData = async () => {
   try {
     const response = await api.get(`group/get/${groupId.value}`);
     lessonStatus.value = response.data.lessonGroup
-    console.log(lessonStatus.value)
     getData.value = response.data
     students.value = getData.value.groupStudents
     payment.value = getData.value.payment
@@ -80,7 +79,11 @@ function handleClose() {
   tableKey.value += 1
 }
 function handleClose1() {
-
+  fetchData()
+  tableKey.value += 1
+}
+function handleCloseStart() {
+  isStartModal.value = false
   fetchData()
   tableKey.value += 1
 }
@@ -90,7 +93,7 @@ function handleClose1() {
   <div>
 
     <AddGroupPupil v-if="isAddModal" @close="handleClose" :group_id="groupId" :group_status="getData.group.status" />
-    <startGroup v-if="isStartModal" @close="isStartModal = false" :group_id="groupId" :group_data="getData.group" />
+    <startGroup v-if="isStartModal" @close="handleCloseStart" :group_id="groupId" :group_data="getData.group" />
     <div class="">
       <div class="pt-5 flex items-center justify-between mb-10">
         <h1 class="text-xl text-[#29A0E3] font-medium" v-if="group != null">{{ group.code }} | {{ group.name }} guruhi
@@ -151,7 +154,7 @@ function handleClose1() {
     </div>
     <div>
       <pupils v-if="tabIndex == 1" :students="students" :group_data="getData.group" @close="handleClose1" />
-      <jurnal v-if="tabIndex == 2" :students="students" :group_data="getData.group" />
+      <jurnal v-if="tabIndex == 2" :students="students" :group_data="getData.group" :group_lesson="lessonStatus" />
       <payments v-if="tabIndex == 3" :payment="payment" :group_data="group" />
       <about v-if="tabIndex == 4" :students="students" />
     </div>

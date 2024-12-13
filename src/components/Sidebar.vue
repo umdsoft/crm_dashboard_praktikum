@@ -4,8 +4,10 @@ import { Icon } from '@iconify/vue';
 import { useSidebarStore } from '@/store/sidebar';
 import { useRoute } from 'vue-router'
 
-const route = useRoute()
+import { useUserStore } from '@/store/user';
 
+const route = useRoute()
+const userStore = useUserStore()
 
 console.log(route);
 const sidebarStore = useSidebarStore()
@@ -20,7 +22,8 @@ const sidebarMenu = ref([
   {
     name: 'Lidlar',
     url: '/leads',
-    icon: 'mdi:leads-outline'
+    icon: 'mdi:leads-outline',
+    roles: ['super', 'sale_manager']
   },
   {
     name: 'Topshiriqlar',
@@ -35,17 +38,26 @@ const sidebarMenu = ref([
   {
     name: 'Guruhlar',
     url: '/groups',
-    icon: 'mingcute:vector-group-fill'
+    icon: 'mingcute:vector-group-fill',
+    roles: ['super', 'study_manager']
+  },
+  {
+    name: 'Darslar ro‘yhati',
+    url: '/last-lesson',
+    icon: 'streamline:class-lesson',
+    roles: ['super', 'study_manager']
   },
   {
     name: 'O\'quvchilar',
     url: '/students',
-    icon: 'ph:student'
+    icon: 'ph:student',
+    roles: ['super', 'study_manager']
   },
   {
     name: 'Darslar ro‘yhati',
     url: '/lesson',
-    icon: 'material-symbols:play-lesson-outline'
+    icon: 'material-symbols:play-lesson-outline',
+    roles: ['super']
   },
   {
     name: 'To‘lovlar',
@@ -55,7 +67,8 @@ const sidebarMenu = ref([
   {
     name: 'Ish haqi hisoboti',
     url: '/salary-report',
-    icon: 'majesticons:money-hand-line'
+    icon: 'majesticons:money-hand-line',
+    roles: ['super']
   },
 ])
 
@@ -115,7 +128,11 @@ const sidebarMenu = ref([
 
 // setSidebarMenu(route.name)
 
+const sidebarMenuWithRoles = computed(() => {
+  console.log("userStore.user?.role", userStore.user?.role);
 
+  return sidebarMenu.value.filter(item => item?.roles?.includes(userStore.user?.role) || !item?.roles)
+})
 
 </script>
 
@@ -126,10 +143,11 @@ const sidebarMenu = ref([
       <div>
         <img class="mx-auto" src="/logo.png" alt="">
       </div>
+
       <div class="flex flex-col mt-10 gap-2">
         <router-link
           class="[&.router-link-exact-active]:bg-[#114E7B] flex items-center gap-2 text-white p-3 rounded-md hover:bg-[#114E7B]"
-          v-for="item, index in sidebarMenu" :key="index" :to="item.url">
+          v-for="item, index in sidebarMenuWithRoles" :key="index" :to="item.url">
           <Icon :icon="`${item.icon}`" width="26" height="26" />
           <p class="text-bold">{{ item.name }}</p>
         </router-link>

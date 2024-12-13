@@ -2,40 +2,30 @@
 import { ref, onMounted } from "vue";
 import { api } from "@/api";
 import dateformat from "dateformat";
+const emit = defineEmits(['close'])
+import { message } from 'ant-design-vue';
 const candidate = ref([]);
-const props = defineProps(["students"]);
+const props = defineProps(["students", 'group_lesson', "group_id"]);
 
 const sendData = ref([]);
 const do_render_html = ref(false);
 const currentPage = ref(1);
-const group_data = ref(props.group_data);
-const fetchData = async () => {
-    try {
-        candidate.value = props.students;
-    } catch (error) {
-        console.error("Error occurred:", error);
-    }
-};
+
+
 function dateFormat(date) {
     let date1 = dateformat(date, "dd.mm.yyyy");
     return date1;
 }
-const data = ref({
-    group_id: props.group_id,
-    start_date: null,
-    mentor: null,
-    isCheck: false,
-});
 
 const startGroup = async () => {
     try {
-
-        console.log("data", sendData._value);
+        await api.post("/group/add-checkup", { data: sendData._value });
+        message.success('Muvvafaqiyatli yakunlandi.');
+        emit('close')
     } catch (e) {
         console.log(e);
     }
 };
-fetchData();
 
 onMounted(() => {
     createSendDataSchema();
@@ -45,19 +35,15 @@ onMounted(() => {
 function createSendDataSchema() {
     props.students.forEach((student) => {
         sendData.value.push({
-            id: student.id,
+            student_id: student.id,
             isCheck: true,
+            group_id: props.group_id.id,
+            gl_id: props.group_lesson.id,
+            gsid: student.gid,
             reason: "",
         });
     });
 }
-
-// const data = {
-//     group_id: 1,
-//     userResult: [
-//         { id: 1, isCheck: true, reason: null }
-//     ]
-// }
 </script>
 
 <template>
@@ -66,7 +52,7 @@ function createSendDataSchema() {
         <div class="fixed top-1/2 w-1/2 rounded-md left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 p-5">
             <div class="mb-10 flex justify-between items-center">
                 <h1>Guruhni yo‘qlama qilish</h1>
-                <button @click="$emit('close')">
+                <button @click="emit('close')">
                     <Icon icon="mdi:close" width="26" class="text-red-500" height="26" />
                 </button>
             </div>
@@ -81,11 +67,13 @@ function createSendDataSchema() {
                         <th class="px-6 py-3 text-center">Sana</th>
                     </tr>
                 </thead>
+
                 <tbody class="text-base">
                     <tr v-for="(item, index) in props.students" :key="index" class="border-b hover:bg-gray-50 m-5">
                         <th scope="row" class="py-2 font-medium whitespace-nowrap text-center">
                             {{ (currentPage - 1) * 10 + index + 1 }}
                         </th>
+
                         <td class="">
                             {{ item.full_name }}
                         </td>

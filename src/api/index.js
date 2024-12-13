@@ -34,7 +34,7 @@ api.interceptors.response.use(
 
       try {
         const rs = await api.post("/user/refresh-token", {
-          refreshToken: userStore.tokens.refreshToken,
+          accessToken: userStore.tokens.refreshToken,
         });
 
         const { accessToken } = rs.data;

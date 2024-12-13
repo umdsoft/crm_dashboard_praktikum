@@ -4,6 +4,7 @@ import { Icon } from '@iconify/vue';
 import { message } from 'ant-design-vue';
 import { api } from '@/api'
 const emit = defineEmits(['close'])
+const props = defineProps(['students', 'group_data'])
 const confirm = async (student_id) => {
   // console.log(e);
   await api.post(`group/delete-student/${student_id}`)
@@ -24,7 +25,7 @@ const fetchData = async () => {
     console.error('Error occurred:', error);
   }
 };
-const props = defineProps(['students', 'group_data'])
+
 
 watch(() => props.data, () => {
   fetchData()
@@ -83,6 +84,10 @@ fetchData()
                   <button v-if="group_data.status == 1" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     Shartnomani yuklash
                   </button>
+                  <a :href="`https://app.praktikum-academy.uz/api/student/certificate/${item.cert_code}`"
+                    v-if="group_data.status == 2" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
+                    Sertifikatni yuklash
+                  </a>
                   <a-popconfirm placement="topLeft" title="O'quvchini guruhdan o'chirishni xoxlaysizmi?"
                     ok-type="danger" ok-text="Ha" cancel-text="Yo'q" @confirm="confirm(item.gid)" @cancel="cancel">
                     <button class="font-medium p-2  bg-red-500/20 rounded-md text-center"

@@ -1,4 +1,4 @@
-<script setup >
+<script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '@/api'
@@ -19,9 +19,9 @@ const errorMessage = ref('');
 const login = async () => {
   try {
     const response = await api.post('/user/login', formData.value);
-    // getUserMe()
-    // alert('ok')
     userStore.setToken(response.data.tokens)
+    getUserMe()
+    await userStore.getUser()
     router.push('/')
 
   } catch (error) {
