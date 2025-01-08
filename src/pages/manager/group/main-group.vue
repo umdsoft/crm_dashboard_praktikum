@@ -22,6 +22,7 @@ const groupId = ref(route.params.id)
 const students = ref([])
 const payment = ref([])
 const group = ref(null)
+const checkup = ref([])
 const tableKey = ref(1)
 
 const changeTab = (index) => {
@@ -31,6 +32,8 @@ const changeTab = (index) => {
 const fetchData = async () => {
   try {
     const response = await api.get(`group/get/${groupId.value}`);
+    console.log(response.data)
+    checkup.value = response.data.formattedData
     lessonStatus.value = response.data.lessonGroup
     getData.value = response.data
     students.value = getData.value.groupStudents
@@ -40,6 +43,9 @@ const fetchData = async () => {
     console.log('e', e)
   }
 }
+
+
+
 fetchData()
 const confirm = async (group_id) => {
   await api.post(`/group/end-group/${group_id}`)
@@ -154,7 +160,7 @@ function handleCloseStart() {
     </div>
     <div>
       <pupils v-if="tabIndex == 1" :students="students" :group_data="getData.group" @close="handleClose1" />
-      <jurnal v-if="tabIndex == 2" :students="students" :group_data="getData.group" :group_lesson="lessonStatus" />
+      <jurnal v-if="tabIndex == 2" :students="students" :checkup="checkup" :group_data="getData.group" :group_lesson="lessonStatus" />
       <payments v-if="tabIndex == 3" :payment="payment" :group_data="group" />
       <about v-if="tabIndex == 4" :students="students" />
     </div>

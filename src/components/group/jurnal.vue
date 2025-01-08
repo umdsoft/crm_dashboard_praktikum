@@ -5,7 +5,7 @@ import Register from './register.vue'
 const currentPage = ref(1)
 
 const isRegisterModal = ref(false)
-const props = defineProps(['students', 'group_data', 'group_lesson'])
+const props = defineProps(['students', 'checkup', 'group_data', 'group_lesson'])
 
 async function handleClose() {
   isRegisterModal.value = false
@@ -29,43 +29,21 @@ async function handleClose() {
             <thead class="text-sm text-gray-700">
               <tr>
                 <th class="px-6 py-3 text-center">#</th>
-                <th class="px-6 py-3 text-center">O'quvchi kodi</th>
                 <th class="px-6 py-3 text-center">O'quvchi</th>
-                <th class="px-6 py-3 text-center">Telefon</th>
-                <th class="px-6 py-3 text-center">Loyiha</th>
-                <th class="px-6 py-3 text-center">Status</th>
-                <th class="px-6 py-3 text-center">Amal</th>
+                <th class="px-6 py-2"> </th>
               </tr>
             </thead>
+
             <tbody class="text-base" v-if="props.students.length > 0">
-              <tr v-for="item, index in props.students" :key="index" class=" border-b hover:bg-gray-50 m-5">
+              <tr v-for="item, index in props.checkup" :key="index" class=" border-b hover:bg-gray-50 m-5">
                 <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap text-center ">
                   {{ (currentPage - 1) * 10 + index + 1 }}
                 </th>
-                <td class="px-6 py-2 text-center">
-                  {{ item.code }}
-                </td>
                 <td class="px-6 py-2">
                   {{ item.full_name }}
                 </td>
-                <td class="px-6 py-2 text-center">
-                  {{ item.phone }}
-                </td>
-                <td class="px-6 py-2 text-center">
-                  <span v-if="item.project == null">-</span>
-                  <span v-if="item.project != null">{{ item.project }}</span>
-                </td>
-
-                <td class="px-6 py-2 text-center">
-                  <span v-if="item.status == 1" class="text-emerald-800 font-medium">O'qimoqda</span>
-                </td>
-                <td class="px-6 py-2 flex items-center justify-end gap-2">
-                  <button class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
-                    Shartnomani yuklash
-                  </button>
-                  <button class="font-medium p-2  bg-red-500/20 rounded-md text-center">
-                    <Icon class="text-2xl text-red-500" icon="ph:trash" />
-                  </button>
+                <td class="px-6 py-2" v-for="item, index in item.data" :key="index">
+                  {{ item.checkup }}
                 </td>
               </tr>
             </tbody>
