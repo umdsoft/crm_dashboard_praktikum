@@ -15,22 +15,27 @@ const leads = ref([
   {
     title: "Yangi lidlar",
     color: '#166199',
-    tasks: []
+    tasks: [],
+    action: 0
   },
   {
     title: "Saralangan",
-    color: '#008E76',
-    tasks: []
+    color: '#00AEED',
+
+    tasks: [],
+    action: 1
   },
   {
     title: "Kursga yozilgan",
     color: '#FFAA00',
-    tasks: []
+    tasks: [],
+    action: 2
   },
   {
-    title: "To'lov qilgan",
-    color: '#00AEED',
-    tasks: []
+    title: "O'qishni boshlagan",
+    color: '#008E76',
+    tasks: [],
+    action: 3
   }
 ])
 const getNewLeads = async () => {
@@ -92,10 +97,9 @@ const leadCreate = () => {
   <createLead v-if="isAddModal" @create="leadCreate" @close="isAddModal = false" />
 
   <div class="flex gap-x-5">
-    <div class="w-1/4 rounded overflow-hidden" v-for="column in leads">
+    <div class="w-1/4 rounded overflow-hidden" v-for="(column, index) in leads" :key="index">
       <div class="bg-white  p-5 flex items-center justify-between">
-        <h1>{{ column.title }} <span class="bg-primary px-2 text-white ml-2 rounded-full">{{ 'i'
-        }}</span>
+        <h1>{{ column.title }} <span class="bg-primary px-2 text-white ml-2 rounded-full">{{ column.tasks.length }}</span>
         </h1>
         <button v-if="column.title == 'Yangi lidlar'" @click="createTask(column.title)"
           class="bg-primary text-white py-1  rounded px-2">
@@ -103,7 +107,7 @@ const leadCreate = () => {
         </button>
       </div>
       <div class="p-5 bg-slate-300">
-        <LeadCard :column="column"/>
+        <LeadCard :column="column" />
       </div>
     </div>
   </div>

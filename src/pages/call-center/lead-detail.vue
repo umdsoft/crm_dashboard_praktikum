@@ -4,13 +4,17 @@ import { ref } from "vue";
 import { api } from '@/api'
 import { useRoute } from 'vue-router'
 import dateformat from "dateformat";
+import { message } from 'ant-design-vue';
+
 const route = useRoute()
 const changeModal = ref(false)
 const changeEditModal = ref(false)
 const lead = ref()
 const newLead = ref()
-
-
+const formData = ref({
+  text: null
+})
+const lead_action = ref()
 
 function dateFormat2(date) {
   let date1 = dateformat(date, "dd.mm.yyyy");
@@ -21,6 +25,8 @@ const fetchData = async () => {
     const response = await api.get(`lead/by-id/${route.params.id}`);
     lead.value = response.data.lead
     newLead.value = response.data.newLead
+    lead_action.value = response.data.actions
+
   } catch (error) {
     console.error('Error occurred:', error);
   }
@@ -47,12 +53,24 @@ const leads = [
   },
   {
     id: 3,
-    name: 'To\'lov qilgan'
+    name: 'O\'qishni boshlagan'
   },
 ]
 const editLeadId = ref('')
 const changeLead = () => {
   changeModal.value = true
+}
+const addAction = async () => {
+  try {
+    await api.post(`lead/create-action/${newLead.value}`, {
+      text: formData.value.text
+    });
+    message.success('Muvvafaiyatli saqlandi');
+    fetchData()
+    formData.value.text = ''
+  } catch (error) {
+    console.error('Error occurred:', error);
+  }
 }
 const editLead = async () => {
   try {
@@ -150,7 +168,7 @@ const editLead = async () => {
           <div class="flex justify-between mb-10">
             <div class="flex gap-5">
               <div class="w-10 h-10 flex justify-center items-center text-2xl bg-primary rounded-full text-white">{{
-        lead.name[0] }}
+                lead.name[0] }}
               </div>
               <div>
                 <h1 class="text-primary font-semibold">{{ lead.name }}</h1>
@@ -221,44 +239,48 @@ const editLead = async () => {
         <div class="h-[calc(100vh-180px)] flex flex-col justify-between">
           <div>
 
-            <div class="flex items-center mb-3">
-              <span class="border bg-primary flex-1"></span>
-              <span class="bg-primary text-white py-1 text-center w-[150px] rounded-full">Mart</span>
-              <span class="border bg-primary flex-1"></span>
-            </div>
+
             <div class="flex items-center">
               <span class="border bg-primary flex-1"></span>
-              <span class="bg-[#29A0E3] text-white py-1 text-center w-[150px] rounded-full">06.03.2024</span>
+              <span class="bg-[#29A0E3] text-white py-1 text-center w-[230px] rounded-full">Lid haqida ma'lumot</span>
               <span class="border bg-primary flex-1"></span>
             </div>
 
+            <div class="scrollable-container">
+              <div class="bg-white rounded mt-5 mb-2 p-3" v-for="item in lead_action" :key="item.id">
+                <div class="flex items-center gap-2 text-gray-400">
+                  <span>{{ dateFormat2(item.date) }} | {{ item.time }}</span>
+                  <span class="text-gray-500">{{ item.user_name }}</span>
+                  <span> tomonidan bajarildi:</span>
+                </div>
+               
+                <span v-if="item.type == '1'">
+                   Lid holati 
+                   <span v-if="item.to == '0'"><b>Yangi lid</b></span> 
+                   <span v-if="item.to == '1'"><b>Saralangan</b></span> 
+                   <span v-if="item.to == '2'"><b>Kursga yozilgan</b></span> 
+                   <span v-if="item.to == '3'"><b>O'qishni boshlagan</b></span> 
+                   dan 
+                   <span v-if="item.do == '0'"><b>Yangi lid</b></span> 
+                   <span v-if="item.do == '1'"><b>Saralangan</b></span> 
+                   <span v-if="item.do == '2'"><b>Kursga yozilgan</b></span> 
+                   <span v-if="item.do == '3'"><b>O'qishni boshlagan</b></span> 
+                   ga o'zgartirildi
+                </span>
+                <p v-if="item.type == '2'">{{ item.text }}</p>
+              </div>
+            </div>
 
-            <div class="bg-white rounded mt-5 mb-2 p-3">
-              <div class="flex items-center gap-2 text-gray-400">
-                <span>06.03.2024 | 15:59</span>
-                <span class="text-gray-500">Umidbek Jumaniyozov </span>
-                <span> tomonidan bajarildi:</span>
-              </div>
-              <p>Telefonni ko’tarmadi</p>
-            </div>
-            <div class="bg-white rounded p-3">
-              <div class="flex items-center gap-2 text-gray-400">
-                <span>06.03.2024 | 15:59</span>
-                <span class="text-gray-500">Umidbek Jumaniyozov </span>
-                <span> tomonidan bajarildi:</span>
-              </div>
-              <p>Telefonni ko’tarmadi</p>
-            </div>
           </div>
           <div>
             <div class="bg-white p-5 rounded">
-              <textarea class="w-full min-h-20  focus:outline-none" name="" id=""></textarea>
+              <textarea class="w-full min-h-20  focus:outline-none" name="" v-model="formData.text"></textarea>
 
               <div class="flex justify-end mt-5">
                 <button @click="changeLead" class="mr-3 py-2 rounded text-white px-3 bg-[#29A0E3]">Holatni
                   o'zgartirish</button>
                 <button class="mr-3 py-2 rounded text-white px-3 bg-primary">Topshiriq yaratish</button>
-                <button class="py-2 rounded text-white px-3 bg-[#008E76]">Saqlash</button>
+                <button @click="addAction" class="py-2 rounded text-white px-3 bg-[#008E76]">Saqlash</button>
               </div>
             </div>
           </div>
@@ -272,4 +294,17 @@ const editLead = async () => {
 </template>
 
 
-<style lang="scss" scoped></style>
+<style scoped>
+.scrollable-container {
+  max-height: 550px;
+  /* Balansli balandlik qo'shing */
+  overflow-y: auto;
+  /* Y o'qida scrollni yoqish */
+  padding-right: 10px;
+  /* Scroll qismiga joy qoldirish uchun qo'shimcha joy */
+  border: 1px solid #e5e7eb;
+  /* Tashqi chegarani aniqlash (ixtiyoriy) */
+  border-radius: 8px;
+  /* Yuvarlangan burchaklar */
+}
+</style>

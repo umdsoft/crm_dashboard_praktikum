@@ -7,6 +7,7 @@ const fetchData = async () => {
   try {
     const response = await api.get(`lead/get-target`);
     getData.value = response.data
+    console.log(getData.value)
   } catch (e) {
     console.log('e', e)
   }
@@ -25,7 +26,8 @@ const createGroup = async () => {
 const formData = ref({
   full_name: null,
   target: null,
-  phone: null
+  phone: null,
+  direction: null
 })
 const focusTelInput = () => {
   formData.value.phone = '+998'
@@ -44,14 +46,24 @@ fetchData()
         </button>
       </div>
       <div class="grid  gap-3">
+        <p>F.I.O</p>
         <input class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded" type="text" placeholder="F.I.O"
           v-model="formData.full_name">
+
+          <p>Telefon raqam</p>
         <input @focus="focusTelInput" v-maska data-maska="+998 ## ###-##-##"
           class="w-full focus:outline-none pr-12 bg-gray-100 px-4 py-2 rounded" type="text" v-model="formData.phone"
           placeholder="Telefon raqami">
         <div>
+          <p>Platformani tanlang</p>
           <select class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" v-model="formData.target">
             <option v-for="item, index in getData.target" :key="index" :value="item.id">{{ item.name }}</option>
+          </select>
+        </div>
+        <div>
+          <p>Kursni tanlang</p>
+          <select class="w-full px-5 py-2 focus:outline-none pr-12 bg-gray-100  rounded" v-model="formData.direction">
+            <option v-for="item, index in getData.direction" :key="index" :value="item.id">{{ item.name_org }}</option>
           </select>
         </div>
       </div>
