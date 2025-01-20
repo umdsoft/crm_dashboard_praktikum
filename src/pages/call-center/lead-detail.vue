@@ -261,7 +261,7 @@ const editLead = async () => {
                    <span v-if="item.to == '2'"><b>Kursga yozilgan</b></span> 
                    <span v-if="item.to == '3'"><b>O'qishni boshlagan</b></span> 
                    dan 
-                   <span v-if="item.do == '0'"><b>Yangi lid</b></span> 
+                   <span v-if="item.do == '0'"><b>Yangi lid</b></span>
                    <span v-if="item.do == '1'"><b>Saralangan</b></span> 
                    <span v-if="item.do == '2'"><b>Kursga yozilgan</b></span> 
                    <span v-if="item.do == '3'"><b>O'qishni boshlagan</b></span> 

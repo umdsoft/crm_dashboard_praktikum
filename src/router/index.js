@@ -31,8 +31,13 @@ const router = createRouter({
           path: "/students",
           name: "students",
           component: () => import("@/pages/manager/students/index.vue"),
+          meta: { requiresAuth: true },        
+        },
+        {
+          path: "/candidates",
+          name: "candidates",
+          component: () => import("@/pages/manager/candidates/index.vue"),
           meta: { requiresAuth: true },
-        
         },
         {
           path: "/lesson",

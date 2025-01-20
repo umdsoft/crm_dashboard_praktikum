@@ -26,6 +26,12 @@ const sidebarMenu = ref([
     roles: ['super', 'sale_manager']
   },
   {
+    name: 'Ro‘yxatga olish',
+    url: '/candidates',
+    icon: 'mdi-account-plus',
+    roles: ['super', 'sale_manager']
+  },
+  {
     name: 'Topshiriqlar',
     url: '/tasks',
     icon: 'mingcute:task-2-line'
