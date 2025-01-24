@@ -5,7 +5,7 @@ import Register from './register.vue'
 const currentPage = ref(1)
 
 const isRegisterModal = ref(false)
-const props = defineProps(['students', 'checkup', 'group_data', 'group_lesson'])
+const props = defineProps(['students', 'checkup', 'group_data', 'group_lesson','checkDate'])
 
 async function handleClose() {
   isRegisterModal.value = false
@@ -25,12 +25,13 @@ async function handleClose() {
               Yo'qlama qilish
             </button>
           </div>
+         
           <table class="w-full text-sm rtl:text-right">
             <thead class="text-sm text-gray-700">
               <tr>
                 <th class="px-6 py-3 text-center">#</th>
                 <th class="px-6 py-3 text-center">O'quvchi</th>
-                <th class="px-6 py-2"> </th>
+                <th class="px-6 py-2 text-center" v-for="item, index in props.checkDate" :key="index">{{ item.created }}</th>
               </tr>
             </thead>
 
@@ -42,8 +43,14 @@ async function handleClose() {
                 <td class="px-6 py-2">
                   {{ item.full_name }}
                 </td>
-                <td class="px-6 py-2" v-for="item, index in item.data" :key="index">
-                  {{ item.checkup }}
+                <td class="px-6 py-2" width="130" v-for="item, index in item.data" :key="index">
+                  <p class="text-center" v-if="item.checkup == '1'">
+                    <Icon class="text-2xl text-green-700" icon="mdi-check-circle" />
+                  </p>
+                  <p class="text-center" v-if="item.checkup == '0'">
+                    <Icon class="text-2xl text-red-500" icon="mdi-close-circle" />
+                  </p>
+
                 </td>
               </tr>
             </tbody>

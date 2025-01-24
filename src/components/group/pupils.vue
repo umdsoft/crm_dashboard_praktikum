@@ -3,8 +3,12 @@ import { ref, watch } from 'vue'
 import { Icon } from '@iconify/vue';
 import { message } from 'ant-design-vue';
 import { api } from '@/api'
+import { useUserStore } from "@/store/user";
+const userStore = useUserStore();
+const userRole = ref(userStore.user.role);
 const emit = defineEmits(['close'])
 const props = defineProps(['students', 'group_data'])
+
 const confirm = async (student_id) => {
   // console.log(e);
   await api.post(`group/delete-student/${student_id}`)
@@ -52,7 +56,7 @@ fetchData()
                 <th class="px-6 py-3 text-center">Telefon</th>
                 <th class="px-6 py-3 text-center">Loyiha</th>
                 <th class="px-6 py-3 text-center">Status</th>
-                <th class="px-6 py-3 text-center">Amal</th>
+                <th class="px-6 py-3 text-center" v-if="userRole == 'vendor'|| userRole == 'super'">Amal</th>
               </tr>
             </thead>
             <tbody class="text-base" v-if="props.students.length > 0">
@@ -80,7 +84,7 @@ fetchData()
                   <span v-if="item.status == 2" class="text-red-600 font-medium">Ketgan</span>
                   <span v-if="item.status == 3" class="text-yellow-600 font-medium">O'qishni bitirgan</span>
                 </td>
-                <td class="px-6 py-2 flex items-center justify-end gap-2">
+                <td class="px-6 py-2 flex items-center justify-end gap-2" v-if="userRole == 'vendor'|| userRole == 'super'">
                   <button v-if="group_data.status == 1" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     Shartnomani yuklash
                   </button>

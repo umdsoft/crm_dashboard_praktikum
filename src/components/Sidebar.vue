@@ -34,18 +34,20 @@ const sidebarMenu = ref([
   {
     name: 'Topshiriqlar',
     url: '/tasks',
-    icon: 'mingcute:task-2-line'
+    icon: 'mingcute:task-2-line',
+    roles: ['super', 'study_manager']
   },
   {
     name: 'Jo\'natilgan xabarlar',
     url: '/send-messages',
-    icon: 'tabler:send'
+    icon: 'tabler:send',
+    roles: ['super', 'study_manager']
   },
   {
     name: 'Guruhlar',
     url: '/groups',
     icon: 'mingcute:vector-group-fill',
-    roles: ['super', 'study_manager']
+    roles: ['super', 'study_manager','teacher']
   },
   {
     name: 'Darslar ro‘yhati',
@@ -63,12 +65,14 @@ const sidebarMenu = ref([
     name: 'Darslar ro‘yhati',
     url: '/lesson',
     icon: 'material-symbols:play-lesson-outline',
-    roles: ['super']
+    roles: ['super'],
+    roles: ['super', 'study_manager']
   },
   {
     name: 'To‘lovlar',
     url: '/payment',
-    icon: 'emojione-monotone:money-bag'
+    icon: 'emojione-monotone:money-bag',
+    roles: ['super', 'study_manager']
   },
   {
     name: 'Ish haqi hisoboti',

@@ -33,6 +33,7 @@ const getUserMe = async () => {
   try {
     const response = await api.get('/user/me');
     userStore.setUser(response.data)
+    console.log('user',response.data)
   }
   catch (e) {
     console.log(e);

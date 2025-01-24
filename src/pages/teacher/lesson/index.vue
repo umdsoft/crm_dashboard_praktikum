@@ -7,6 +7,11 @@ import { useRouter } from 'vue-router'
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
 import addCourseModal from '../../../components/teacher/addCourseModal.vue';
+import { useUserStore } from "@/store/user";
+const userStore = useUserStore();
+const userRole = ref(userStore.user.role);
+
+
 const users = ref([])
 
 const search = useDebouncedRef('', 1000)
@@ -64,6 +69,7 @@ const goToPage = (page) => {
                 class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
                 Filter
               </button>
+            
               <button @click="isAddModal = true"
                 class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
                 <Icon class="text-lg" icon="ep:plus" />

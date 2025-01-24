@@ -6,7 +6,9 @@ import { api } from '@/api'
 import { useRouter } from 'vue-router'
 import { useDebouncedRef } from '@/composables/debouncedRef.js'
 import dateformat from "dateformat";
-
+import { useUserStore } from "@/store/user";
+const userStore = useUserStore();
+const userRole = ref(userStore.user.role);
 
 const open = ref(false);
 const afterOpenChange = bool => {
@@ -25,6 +27,7 @@ const currentPage = ref(1)
 const totalPages = ref(1)
 const getData = ref([])
 
+
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy");
   return date1;
@@ -35,6 +38,7 @@ const fetchData = async () => {
     getData.value = datas.data
     const response = await api.get(`group/get-all${search.value ? `search?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 15 - 15} `);
     users.value = response.data.data
+
     totalUsers.value = response.data.total
     totalPages.value = Math.ceil(response.data.total / response.data.limit)
     currentPage.value
@@ -87,9 +91,10 @@ const openGroup = (id) => {
       <div>
         <div class="overflow-x-auto bg-white sm:rounded-lg">
           <div class="p-6 flex items-center justify-between mb-10">
+           
             <h1 class="text-xl text-[#29A0E3] font-medium">Guruhlar ro'yxati</h1>
-            <div class="flex items-center gap-2">
-              <button class="flex  items-center text-[#29A0E3]">
+            <div class="flex items-center gap-2" v-if="userRole == 'super'">
+              <button  class="flex  items-center text-[#29A0E3]">
                 Eksport excel
                 <Icon class="text-3xl" icon="material-symbols:download" />
               </button>

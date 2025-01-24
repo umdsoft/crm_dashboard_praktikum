@@ -9,12 +9,15 @@ import about from '@/components/group/about.vue';
 import { api } from '@/api'
 import AddGroupPupil from '../../../components/group/addGroupPupil.vue';
 import { message } from 'ant-design-vue';
+import { useUserStore } from "@/store/user";
+const userStore = useUserStore();
+const userRole = ref(userStore.user.role);
 
 const route = useRoute()
 
 const isAddModal = ref(false)
 const isStartModal = ref(false)
-
+const checkDate = ref([])
 const lessonStatus = ref()
 const getData = ref([])
 const tabIndex = ref(1)
@@ -32,13 +35,16 @@ const changeTab = (index) => {
 const fetchData = async () => {
   try {
     const response = await api.get(`group/get/${groupId.value}`);
-    console.log(response.data)
+    
     checkup.value = response.data.formattedData
     lessonStatus.value = response.data.lessonGroup
+    checkDate.value = response.data.checkData
     getData.value = response.data
     students.value = getData.value.groupStudents
     payment.value = getData.value.payment
     group.value = response.data.group
+
+    console.log('sa',checkDate.value)
   } catch (e) {
     console.log('e', e)
   }
@@ -106,26 +112,26 @@ function handleCloseStart() {
         </h1>
 
         <div class="flex items-center gap-2">
-          <button @click="isAddModal = true" v-if="group?.status != 2"
+          <button @click="isAddModal = true" v-if="group?.status != 2 && (userRole == 'vendor'|| userRole == 'super')"
             class="bg-[#29A0E31A]  py-2.5 px-8 rounded flex gap-1  items-center text-[#29A0E3] hover:bg-[#114E7B] hover:text-white">
             <Icon class="text-lg" icon="ep:plus" />
             O‘quvchi qo‘shish
           </button>
-          <button @click="startLesson(groupId)" v-if="group?.status == 1 && lessonStatus == null"
+          <button  @click="startLesson(groupId)" v-if="group?.status == 1 && lessonStatus == null && userRole == 'teacher'"
             class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
             Darsni boshlash
           </button>
-          <button @click="endLesson(groupId)" v-if="group?.status == 1 && lessonStatus != null"
+          <button @click="endLesson(groupId)" v-if="group?.status == 1 && lessonStatus != null && userRole == 'teacher'"
             class="bg-green-600 rounded py-2.5 px-5 flex gap-1 items-center text-white">
             Darsni yakunlash
           </button>
-          <button @click="isStartModal = true" v-if="group?.status == 0"
+          <button @click="isStartModal = true" v-if="group?.status == 0 && (userRole == 'vendor'|| userRole == 'super')"
             class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
             Guruhga start berish
           </button>
           <a-popconfirm placement="bottom" title="Guruhni tugatishni hohlaysizmi?" ok-type="danger"
             ok-text="Guruhni tugatish" cancel-text="Bekor qilish" @confirm="confirm(group?.id)" @cancel="cancel">
-            <button v-if="group?.status == 1"
+            <button v-if="group?.status == 1 && (userRole == 'vendor'|| userRole == 'super')"
               class="bg-[#166199] rounded py-2.5 px-5 flex gap-1 items-center text-white">
               Guruhni tugatish
             </button>
@@ -146,7 +152,7 @@ function handleCloseStart() {
         <Icon class="text-2xl" icon="memory:journal" />
         Jurnal
       </button>
-      <button @click="changeTab(3)" :class="tabIndex == 3 ? 'bg-white text-primary' : ''"
+      <button v-if="userRole == 'vendor'|| userRole == 'super'" @click="changeTab(3)" :class="tabIndex == 3 ? 'bg-white text-primary' : ''"
         class="flex font-semibold   justify-center gap-5 p-5">
         <Icon class="text-2xl" icon="iconoir:hand-cash" />
         To'lovlar grafigi
@@ -160,8 +166,8 @@ function handleCloseStart() {
     </div>
     <div>
       <pupils v-if="tabIndex == 1" :students="students" :group_data="getData.group" @close="handleClose1" />
-      <jurnal v-if="tabIndex == 2" :students="students" :checkup="checkup" :group_data="getData.group" :group_lesson="lessonStatus" />
-      <payments v-if="tabIndex == 3" :payment="payment" :group_data="group" />
+      <jurnal v-if="tabIndex == 2" :students="students" :checkup="checkup" :checkDate="checkDate" :group_data="getData.group" :group_lesson="lessonStatus" />
+      <payments v-if="tabIndex == 3 && (userRole == 'vendor'|| userRole == 'super')" :payment="payment" :group_data="group" />
       <about v-if="tabIndex == 4" :students="students" />
     </div>
   </div>

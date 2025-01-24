@@ -15,6 +15,7 @@ const totalUsers = ref()
 const currentPage = ref(1)
 const totalPages = ref(1)
 const isAddModal = ref(false)
+
 const isStartModal = ref(false)
 function dateFormat(date) {
   let date1 = dateformat(date, "dd.mm.yyyy | HH:MM");
@@ -28,6 +29,7 @@ const fetchData = async () => {
   try {
     const response = await api.get(`student/get-all${search.value ? `?search=${search.value}&` : '?'}limit=15&skip=${currentPage.value * 15 - 15} `);
     users.value = response.data.data
+  
     console.log(response.data)
     totalUsers.value = response.data.total
     totalPages.value = Math.ceil(response.data.total / response.data.limit)
