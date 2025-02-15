@@ -6,6 +6,7 @@ import pupils from '@/components/group/pupils.vue';
 import jurnal from '@/components/group/jurnal.vue';
 import payments from '@/components/group/payments.vue';
 import about from '@/components/group/about.vue';
+import baxolash from '@/components/group/ranked.vue';
 import { api } from '@/api'
 import AddGroupPupil from '../../../components/group/addGroupPupil.vue';
 import { message } from 'ant-design-vue';
@@ -157,6 +158,11 @@ function handleCloseStart() {
         <Icon class="text-2xl" icon="iconoir:hand-cash" />
         To'lovlar grafigi
       </button>
+      <button v-if="userRole == 'teacher'" @click="changeTab(5)" :class="tabIndex == 5 ? 'bg-white text-primary' : ''"
+        class="flex font-semibold   justify-center gap-5 p-5">
+        <Icon class="text-2xl" icon="mdi-account-check" />
+        Baxolash
+      </button>
       <button @click="changeTab(4)" :class="tabIndex == 4 ? 'bg-white text-primary' : ''"
         class="flex font-semibold   justify-center gap-5 p-5">
         <Icon class="text-2xl" icon="ic:round-list" />
@@ -169,6 +175,7 @@ function handleCloseStart() {
       <jurnal v-if="tabIndex == 2" :students="students" :checkup="checkup" :checkDate="checkDate" :group_data="getData.group" :group_lesson="lessonStatus" />
       <payments v-if="tabIndex == 3 && (userRole == 'vendor'|| userRole == 'super')" :payment="payment" :group_data="group" />
       <about v-if="tabIndex == 4" :students="students" />
+      <baxolash v-if="tabIndex == 5" :students="students" :checkup="checkup" :checkDate="checkDate" :group_data="getData.group" :group_lesson="lessonStatus" />
     </div>
   </div>
 </template>

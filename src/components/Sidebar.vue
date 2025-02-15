@@ -31,9 +31,15 @@ const sidebarMenu = ref([
     icon: 'mdi-account-plus',
     roles: ['super', 'sale_manager']
   },
-  {
-    name: 'Topshiriqlar',
-    url: '/tasks',
+  // {
+  //   name: 'Topshiriqlar',
+  //   url: '/tasks',
+  //   icon: 'mingcute:task-2-line',
+  //   roles: ['super', 'study_manager']
+  // },
+    {
+    name: "O'quv dasturi",
+    url: '/course-plan',
     icon: 'mingcute:task-2-line',
     roles: ['super', 'study_manager']
   },

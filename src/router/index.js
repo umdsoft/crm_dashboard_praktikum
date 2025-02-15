@@ -13,7 +13,7 @@ const router = createRouter({
           path: "/",
           name: "home",
           component: () => import("@/pages/home.vue"),
-          meta: { requiresAuth: true, roles: ["super"] },
+          meta: { requiresAuth: true, roles: ["super",'teacher'] },
         },
         {
           path: "/about",
@@ -98,6 +98,18 @@ const router = createRouter({
           path: "/send-messages",
           name: "sendMessages",
           component: () => import("@/pages/call-center/send-messages.vue"),
+          meta: { requiresAuth: true, roles: ["super"] },
+        },
+        {
+          path: "/course-plan",
+          name: "coursePlan",
+          component: () => import("@/pages/manager/course/index.vue"),
+          meta: { requiresAuth: true, roles: ["super"] },
+        },
+        {
+          path: "/course-plan/:id",
+          name: "coursePlanId",
+          component: () => import("@/pages/manager/course/get.vue"),
           meta: { requiresAuth: true, roles: ["super"] },
         },
         {

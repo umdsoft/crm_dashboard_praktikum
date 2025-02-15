@@ -10,13 +10,11 @@ const emit = defineEmits(['close'])
 const props = defineProps(['students', 'group_data'])
 
 const confirm = async (student_id) => {
-  // console.log(e);
   await api.post(`group/delete-student/${student_id}`)
   message.success(`O'quvchi guruhdan o'chirildi!`);
   emit('close')
 };
 const cancel = e => {
-  console.log(e);
   message.error('Click on No');
 };
 
@@ -88,7 +86,7 @@ fetchData()
                   <button v-if="group_data.status == 1" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     Shartnomani yuklash
                   </button>
-                  <a :href="`https://app.praktikum-academy.uz/api/student/certificate/${item.cert_code}`"
+                  <a :href="`https://api.umdsoft.uz/api/student/certificate/${item.cert_code}`"
                     v-if="group_data.status == 2" class="p-2 rounded-md bg-[#29A0E31A] text-[#29A0E3] text-base">
                     Sertifikatni yuklash
                   </a>
